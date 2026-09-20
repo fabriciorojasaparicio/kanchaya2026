@@ -1,0 +1,20 @@
+{
+  "name": "kanchaya",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.5.2",
+  "engines": {
+    "node": "24.5.0",
+    "pnpm": "11.5.2"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter './apps/*' dev",
+    "build": "pnpm --recursive build",
+    "test": "pnpm --recursive test",
+    "lint": "pnpm --recursive lint",
+    "format": "pnpm --recursive format"
+  },
+  "devDependencies": {
+    "supabase": "^2.117.0"
+  }
+}

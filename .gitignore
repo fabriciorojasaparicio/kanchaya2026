@@ -1,0 +1,29 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Node.js
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# Builds
+dist/
+.next/
+out/
+coverage/
+
+# Local Docker / Supabase
+volumes/
+docker-compose.override.yml
+supabase/.temp/
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
