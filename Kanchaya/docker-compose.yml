@@ -56,6 +56,40 @@ services:
     networks:
       - kanchaya
 
+  minio:
+    image: quay.io/minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-kanchaya}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-kanchaya_minio_password}
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks:
+      - kanchaya
+  
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
+      - "${MAILPIT_UI_PORT:-8025}:8025"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8025/api/v1/info"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks:
+      - kanchaya
+
   api:
     build:
       context: ./services/api
@@ -115,6 +149,7 @@ volumes:
   postgres_data:
   redis_data:
   elasticsearch_data:
+  minio_data:
 
 networks:
   kanchaya:
