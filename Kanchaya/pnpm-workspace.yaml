@@ -3,6 +3,8 @@ packages:
   - "packages/*"
 allowBuilds:
   '@parcel/watcher': true
+  '@scarf/scarf': true
+  argon2: true
   esbuild: true
   msgpackr-extract: true
   unrs-resolver: true

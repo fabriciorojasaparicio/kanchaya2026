@@ -22,6 +22,9 @@
     "db:seed": "pnpm --filter api exec prisma db seed"
   },
   "devDependencies": {
+    "eslint": "^9.39.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.5.1",
     "supabase": "^2.117.0"
   }
 }
