@@ -1,2 +1,75 @@
 // use prisma-8
 // Contract inferred from the live database schema. Edit as needed, then run `prisma contract emit`.
+
+enum Role {
+	PLAYER
+	VENUE_MANAGER
+	TOURNAMENT_ORGANIZER
+	PLATFORM_ADMIN
+}
+
+enum UserStatus {
+	ACTIVE
+	SUSPENDED
+}
+
+model User {
+	id                   String        @id @default(uuid())
+	email                String        @unique
+	role                 Role          @default(PLAYER)
+	status               UserStatus    @default(ACTIVE)
+	createdAt            DateTime      @default(now())
+	updatedAt            temporal.updatedAt()
+	roleRequests         RoleRequest[]
+	auditEventsAsActor   AuditEvent[]  @relation("AuditActor")
+	auditEventsAsTarget  AuditEvent[]  @relation("AuditTarget")
+}
+
+enum RoleRequestStatus {
+	PENDING
+	APPROVED
+	REJECTED
+}
+
+model RoleRequest {
+	id               String            @id @default(uuid())
+	requesterUserId  String
+	requestedRole    Role
+	status           RoleRequestStatus @default(PENDING)
+	createdAt        DateTime          @default(now())
+	resolvedAt       DateTime?
+	resolvedByUserId String?
+	requester        User              @relation(fields: [requesterUserId], references: [id])
+
+	@@index([requesterUserId])
+	@@index([status])
+}
+
+enum AuditEventType {
+	ROLE_ASSIGNED
+	ROLE_CHANGED
+	ROLE_REMOVED
+	USER_SUSPENDED
+	USER_REACTIVATED
+	PERMISSION_GRANTED
+	PERMISSION_REVOKED
+}
+
+model AuditEvent {
+	id           String         @id @default(uuid())
+	type         AuditEventType
+	actorUserId  String
+	targetUserId String
+	previousRole Role?
+	newRole      Role?
+	permission   String?
+	metadata     Json?
+	createdAt    DateTime       @default(now())
+	actor        User           @relation("AuditActor", fields: [actorUserId], references: [id])
+	target       User           @relation("AuditTarget", fields: [targetUserId], references: [id])
+
+	@@index([actorUserId])
+	@@index([targetUserId])
+	@@index([type])
+	@@index([createdAt])
+}

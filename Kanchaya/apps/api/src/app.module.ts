@@ -1,12 +1,18 @@
 import { Module } from '@nestjs/common';
 import { createObserveModule } from '@nestjs/observe';
+import { AuthzModule } from './authz/authz.module';
+import { AuthzTestModule } from './authz/authz-test.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuditModule } from "./audit/audit.module";
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
 @Module({
   imports: [
+    AuthzModule,
+    AuthzTestModule,
+    AuditModule,
     // Distributed tracing, auto-correlated logs, request/job metrics, error
     // telemetry, alarms, and more — out of the box. Sign up at https://observe.nestjs.com
     ObserveModule.forRoot({

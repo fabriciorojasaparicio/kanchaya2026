@@ -34,8 +34,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'0c0734babd6eeb868fee1f281ca96963022475611560e9f170f465daa35f8599'>;
-export type ExecutionHash = ExecutionHashBase<string>;
+  StorageHashBase<'f77a319c36d502c449c88057e5b795fd8488dc95e5dd09117e5a79f5c51656f3'>;
+export type ExecutionHash =
+  ExecutionHashBase<'7d989bd36e8e1b0825bd29fdcfd10c5a49c8557c12d92d9528122c9ba646bbbd'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -239,15 +240,228 @@ type DefaultLiteralValue<CodecId extends string, Encoded> = CodecId extends keyo
     : CodecTypes[CodecId]['json']
   : Encoded;
 
-export type FieldOutputTypes = { readonly public: Record<string, never> };
-export type FieldInputTypes = { readonly public: Record<string, never> };
-export type StorageColumnTypes = { readonly public: {} };
-export type StorageColumnInputTypes = { readonly public: {} };
+export type FieldOutputTypes = {
+  readonly public: {
+    readonly AuditEvent: {
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly type:
+        | 'ROLE_ASSIGNED'
+        | 'ROLE_CHANGED'
+        | 'ROLE_REMOVED'
+        | 'USER_SUSPENDED'
+        | 'USER_REACTIVATED'
+        | 'PERMISSION_GRANTED'
+        | 'PERMISSION_REVOKED';
+      readonly actorUserId: CodecTypes['pg/text@1']['output'];
+      readonly targetUserId: CodecTypes['pg/text@1']['output'];
+      readonly previousRole:
+        'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN' | null;
+      readonly newRole:
+        'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN' | null;
+      readonly permission: CodecTypes['pg/text@1']['output'] | null;
+      readonly metadata: CodecTypes['pg/json@1']['output'] | null;
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
+    readonly RoleRequest: {
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly requesterUserId: CodecTypes['pg/text@1']['output'];
+      readonly requestedRole:
+        'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN';
+      readonly status: 'PENDING' | 'APPROVED' | 'REJECTED';
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly resolvedAt: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
+      readonly resolvedByUserId: CodecTypes['pg/text@1']['output'] | null;
+    };
+    readonly User: {
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly email: CodecTypes['pg/text@1']['output'];
+      readonly role: 'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN';
+      readonly status: 'ACTIVE' | 'SUSPENDED';
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
+  };
+};
+export type FieldInputTypes = {
+  readonly public: {
+    readonly AuditEvent: {
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly type:
+        | 'ROLE_ASSIGNED'
+        | 'ROLE_CHANGED'
+        | 'ROLE_REMOVED'
+        | 'USER_SUSPENDED'
+        | 'USER_REACTIVATED'
+        | 'PERMISSION_GRANTED'
+        | 'PERMISSION_REVOKED';
+      readonly actorUserId: CodecTypes['pg/text@1']['input'];
+      readonly targetUserId: CodecTypes['pg/text@1']['input'];
+      readonly previousRole:
+        'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN' | null;
+      readonly newRole:
+        'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN' | null;
+      readonly permission: CodecTypes['pg/text@1']['input'] | null;
+      readonly metadata: CodecTypes['pg/json@1']['input'] | null;
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+    };
+    readonly RoleRequest: {
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly requesterUserId: CodecTypes['pg/text@1']['input'];
+      readonly requestedRole:
+        'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN';
+      readonly status: 'PENDING' | 'APPROVED' | 'REJECTED';
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly resolvedAt: CodecTypes['pg/timestamptz-temporal@1']['input'] | null;
+      readonly resolvedByUserId: CodecTypes['pg/text@1']['input'] | null;
+    };
+    readonly User: {
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly email: CodecTypes['pg/text@1']['input'];
+      readonly role: 'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN';
+      readonly status: 'ACTIVE' | 'SUSPENDED';
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+    };
+  };
+};
+export type StorageColumnTypes = {
+  readonly public: {
+    readonly auditEvent: {
+      readonly actorUserId: CodecTypes['pg/text@1']['output'];
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly metadata: CodecTypes['pg/json@1']['output'] | null;
+      readonly newRole:
+        'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN' | null;
+      readonly permission: CodecTypes['pg/text@1']['output'] | null;
+      readonly previousRole:
+        'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN' | null;
+      readonly targetUserId: CodecTypes['pg/text@1']['output'];
+      readonly type:
+        | 'ROLE_ASSIGNED'
+        | 'ROLE_CHANGED'
+        | 'ROLE_REMOVED'
+        | 'USER_SUSPENDED'
+        | 'USER_REACTIVATED'
+        | 'PERMISSION_GRANTED'
+        | 'PERMISSION_REVOKED';
+    };
+    readonly roleRequest: {
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly requestedRole:
+        'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN';
+      readonly requesterUserId: CodecTypes['pg/text@1']['output'];
+      readonly resolvedAt: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
+      readonly resolvedByUserId: CodecTypes['pg/text@1']['output'] | null;
+      readonly status: 'PENDING' | 'APPROVED' | 'REJECTED';
+    };
+    readonly user: {
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly email: CodecTypes['pg/text@1']['output'];
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly role: 'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN';
+      readonly status: 'ACTIVE' | 'SUSPENDED';
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
+  };
+};
+export type StorageColumnInputTypes = {
+  readonly public: {
+    readonly auditEvent: {
+      readonly actorUserId: CodecTypes['pg/text@1']['input'];
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly metadata: CodecTypes['pg/json@1']['input'] | null;
+      readonly newRole:
+        'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN' | null;
+      readonly permission: CodecTypes['pg/text@1']['input'] | null;
+      readonly previousRole:
+        'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN' | null;
+      readonly targetUserId: CodecTypes['pg/text@1']['input'];
+      readonly type:
+        | 'ROLE_ASSIGNED'
+        | 'ROLE_CHANGED'
+        | 'ROLE_REMOVED'
+        | 'USER_SUSPENDED'
+        | 'USER_REACTIVATED'
+        | 'PERMISSION_GRANTED'
+        | 'PERMISSION_REVOKED';
+    };
+    readonly roleRequest: {
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly requestedRole:
+        'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN';
+      readonly requesterUserId: CodecTypes['pg/text@1']['input'];
+      readonly resolvedAt: CodecTypes['pg/timestamptz-temporal@1']['input'] | null;
+      readonly resolvedByUserId: CodecTypes['pg/text@1']['input'] | null;
+      readonly status: 'PENDING' | 'APPROVED' | 'REJECTED';
+    };
+    readonly user: {
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly email: CodecTypes['pg/text@1']['input'];
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly role: 'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN';
+      readonly status: 'ACTIVE' | 'SUSPENDED';
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+    };
+  };
+};
 
-export namespace Models {}
+export namespace Models {
+  export type public_User = {
+    id: CodecTypes['pg/text@1']['output'];
+    email: CodecTypes['pg/text@1']['output'];
+    role: 'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN';
+    status: 'ACTIVE' | 'SUSPENDED';
+    createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    auditEventsAsActor: public_AuditEvent[];
+    auditEventsAsTarget: public_AuditEvent[];
+    roleRequests: public_RoleRequest[];
+    readonly [RelationKeys]?: 'auditEventsAsActor' | 'auditEventsAsTarget' | 'roleRequests';
+  };
+  export type public_RoleRequest = {
+    id: CodecTypes['pg/text@1']['output'];
+    requesterUserId: CodecTypes['pg/text@1']['output'];
+    requestedRole: 'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN';
+    status: 'PENDING' | 'APPROVED' | 'REJECTED';
+    createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    resolvedAt: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
+    resolvedByUserId: CodecTypes['pg/text@1']['output'] | null;
+    requester: public_User;
+    readonly [RelationKeys]?: 'requester';
+  };
+  export type public_AuditEvent = {
+    id: CodecTypes['pg/text@1']['output'];
+    type:
+      | 'ROLE_ASSIGNED'
+      | 'ROLE_CHANGED'
+      | 'ROLE_REMOVED'
+      | 'USER_SUSPENDED'
+      | 'USER_REACTIVATED'
+      | 'PERMISSION_GRANTED'
+      | 'PERMISSION_REVOKED';
+    actorUserId: CodecTypes['pg/text@1']['output'];
+    targetUserId: CodecTypes['pg/text@1']['output'];
+    previousRole: 'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN' | null;
+    newRole: 'PLAYER' | 'VENUE_MANAGER' | 'TOURNAMENT_ORGANIZER' | 'PLATFORM_ADMIN' | null;
+    permission: CodecTypes['pg/text@1']['output'] | null;
+    metadata: CodecTypes['pg/json@1']['output'] | null;
+    createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    actor: public_User;
+    target: public_User;
+    readonly [RelationKeys]?: 'actor' | 'target';
+  };
+}
 
 export declare const models: {
-  public: {};
+  public: {
+    User: Models.public_User;
+    RoleRequest: Models.public_RoleRequest;
+    AuditEvent: Models.public_AuditEvent;
+  };
 };
 
 export type TypeMaps = TypeMapsType<
@@ -266,7 +480,266 @@ type ContractBase = Omit<
       readonly public: {
         readonly id: 'public';
         readonly kind: 'postgres-schema';
-        readonly entries: { readonly table: {} };
+        readonly entries: {
+          readonly table: {
+            readonly auditEvent: {
+              columns: {
+                readonly id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly type: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly actorUserId: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly targetUserId: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly previousRole: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly newRole: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly permission: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly metadata: {
+                  readonly nativeType: 'json';
+                  readonly codecId: 'pg/json@1';
+                  readonly nullable: true;
+                };
+                readonly createdAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'auditEvent_actorUserId_idx_96dac96c';
+                  readonly prefix: 'auditEvent_actorUserId_idx';
+                  readonly columns: readonly ['actorUserId'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'auditEvent_targetUserId_idx_e0d638f0';
+                  readonly prefix: 'auditEvent_targetUserId_idx';
+                  readonly columns: readonly ['targetUserId'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'auditEvent_type_idx_b6b604ea';
+                  readonly prefix: 'auditEvent_type_idx';
+                  readonly columns: readonly ['type'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'auditEvent_createdAt_idx_9575dbd7';
+                  readonly prefix: 'auditEvent_createdAt_idx';
+                  readonly columns: readonly ['createdAt'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'auditEvent';
+                    readonly columns: readonly ['actorUserId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'user';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'auditEvent';
+                    readonly columns: readonly ['targetUserId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'user';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
+            };
+            readonly roleRequest: {
+              columns: {
+                readonly id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly requesterUserId: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly requestedRole: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly status: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'PENDING'>;
+                  };
+                };
+                readonly createdAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly resolvedAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: true;
+                };
+                readonly resolvedByUserId: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'roleRequest_requesterUserId_idx_75bb1080';
+                  readonly prefix: 'roleRequest_requesterUserId_idx';
+                  readonly columns: readonly ['requesterUserId'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'roleRequest_status_idx_e98638ab';
+                  readonly prefix: 'roleRequest_status_idx';
+                  readonly columns: readonly ['status'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'roleRequest';
+                    readonly columns: readonly ['requesterUserId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'user';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
+            };
+            readonly user: {
+              columns: {
+                readonly id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly email: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly role: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'PLAYER'>;
+                  };
+                };
+                readonly status: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'ACTIVE'>;
+                  };
+                };
+                readonly createdAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly updatedAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [{ readonly columns: readonly ['email'] }];
+              indexes: readonly [];
+              foreignKeys: readonly [];
+            };
+          };
+          readonly valueSet: {
+            readonly AuditEventType: {
+              readonly kind: 'valueSet';
+              readonly values: readonly [
+                'ROLE_ASSIGNED',
+                'ROLE_CHANGED',
+                'ROLE_REMOVED',
+                'USER_SUSPENDED',
+                'USER_REACTIVATED',
+                'PERMISSION_GRANTED',
+                'PERMISSION_REVOKED',
+              ];
+            };
+            readonly Role: {
+              readonly kind: 'valueSet';
+              readonly values: readonly [
+                'PLAYER',
+                'VENUE_MANAGER',
+                'TOURNAMENT_ORGANIZER',
+                'PLATFORM_ADMIN',
+              ];
+            };
+            readonly RoleRequestStatus: {
+              readonly kind: 'valueSet';
+              readonly values: readonly ['PENDING', 'APPROVED', 'REJECTED'];
+            };
+            readonly UserStatus: {
+              readonly kind: 'valueSet';
+              readonly values: readonly ['ACTIVE', 'SUSPENDED'];
+            };
+          };
+        };
       };
     };
     readonly storageHash: StorageHash;
@@ -275,11 +748,281 @@ type ContractBase = Omit<
 > & {
   readonly target: 'postgres';
   readonly targetFamily: 'sql';
-  readonly roots: Record<string, never>;
+  readonly roots: {
+    readonly user: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
+    readonly roleRequest: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'RoleRequest';
+    };
+    readonly auditEvent: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'AuditEvent';
+    };
+  };
   readonly domain: {
     readonly namespaces: {
       readonly public: {
-        readonly models: Record<string, never>;
+        readonly models: {
+          readonly AuditEvent: {
+            readonly fields: {
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly type: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly actorUserId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly targetUserId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly previousRole: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly newRole: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly permission: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly metadata: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/json@1' };
+              };
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+            };
+            readonly relations: {
+              readonly actor: {
+                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['actorUserId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+              readonly target: {
+                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['targetUserId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'auditEvent';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly id: { readonly column: 'id' };
+                readonly type: { readonly column: 'type' };
+                readonly actorUserId: { readonly column: 'actorUserId' };
+                readonly targetUserId: { readonly column: 'targetUserId' };
+                readonly previousRole: { readonly column: 'previousRole' };
+                readonly newRole: { readonly column: 'newRole' };
+                readonly permission: { readonly column: 'permission' };
+                readonly metadata: { readonly column: 'metadata' };
+                readonly createdAt: { readonly column: 'createdAt' };
+              };
+            };
+          };
+          readonly RoleRequest: {
+            readonly fields: {
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly requesterUserId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly requestedRole: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly status: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+              readonly resolvedAt: {
+                readonly nullable: true;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+              readonly resolvedByUserId: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+            };
+            readonly relations: {
+              readonly requester: {
+                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['requesterUserId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'roleRequest';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly id: { readonly column: 'id' };
+                readonly requesterUserId: { readonly column: 'requesterUserId' };
+                readonly requestedRole: { readonly column: 'requestedRole' };
+                readonly status: { readonly column: 'status' };
+                readonly createdAt: { readonly column: 'createdAt' };
+                readonly resolvedAt: { readonly column: 'resolvedAt' };
+                readonly resolvedByUserId: { readonly column: 'resolvedByUserId' };
+              };
+            };
+          };
+          readonly User: {
+            readonly fields: {
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly email: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly role: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly status: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+              readonly updatedAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+            };
+            readonly relations: {
+              readonly auditEventsAsActor: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'AuditEvent';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['actorUserId'];
+                };
+              };
+              readonly auditEventsAsTarget: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'AuditEvent';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['targetUserId'];
+                };
+              };
+              readonly roleRequests: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'RoleRequest';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['requesterUserId'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'user';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly id: { readonly column: 'id' };
+                readonly email: { readonly column: 'email' };
+                readonly role: { readonly column: 'role' };
+                readonly status: { readonly column: 'status' };
+                readonly createdAt: { readonly column: 'createdAt' };
+                readonly updatedAt: { readonly column: 'updatedAt' };
+              };
+            };
+          };
+        };
+        readonly enum: {
+          readonly Role: {
+            readonly codecId: 'pg/text@1';
+            readonly members: readonly [
+              { readonly name: 'PLAYER'; readonly value: 'PLAYER' },
+              { readonly name: 'VENUE_MANAGER'; readonly value: 'VENUE_MANAGER' },
+              { readonly name: 'TOURNAMENT_ORGANIZER'; readonly value: 'TOURNAMENT_ORGANIZER' },
+              { readonly name: 'PLATFORM_ADMIN'; readonly value: 'PLATFORM_ADMIN' },
+            ];
+          };
+          readonly UserStatus: {
+            readonly codecId: 'pg/text@1';
+            readonly members: readonly [
+              { readonly name: 'ACTIVE'; readonly value: 'ACTIVE' },
+              { readonly name: 'SUSPENDED'; readonly value: 'SUSPENDED' },
+            ];
+          };
+          readonly RoleRequestStatus: {
+            readonly codecId: 'pg/text@1';
+            readonly members: readonly [
+              { readonly name: 'PENDING'; readonly value: 'PENDING' },
+              { readonly name: 'APPROVED'; readonly value: 'APPROVED' },
+              { readonly name: 'REJECTED'; readonly value: 'REJECTED' },
+            ];
+          };
+          readonly AuditEventType: {
+            readonly codecId: 'pg/text@1';
+            readonly members: readonly [
+              { readonly name: 'ROLE_ASSIGNED'; readonly value: 'ROLE_ASSIGNED' },
+              { readonly name: 'ROLE_CHANGED'; readonly value: 'ROLE_CHANGED' },
+              { readonly name: 'ROLE_REMOVED'; readonly value: 'ROLE_REMOVED' },
+              { readonly name: 'USER_SUSPENDED'; readonly value: 'USER_SUSPENDED' },
+              { readonly name: 'USER_REACTIVATED'; readonly value: 'USER_REACTIVATED' },
+              { readonly name: 'PERMISSION_GRANTED'; readonly value: 'PERMISSION_GRANTED' },
+              { readonly name: 'PERMISSION_REVOKED'; readonly value: 'PERMISSION_REVOKED' },
+            ];
+          };
+        };
       };
     };
   };
@@ -302,6 +1045,46 @@ type ContractBase = Omit<
     };
   };
   readonly extensions: {};
+  readonly execution: {
+    readonly executionHash: ExecutionHash;
+    readonly mutations: {
+      readonly defaults: readonly [
+        {
+          readonly ref: {
+            readonly namespace: 'public';
+            readonly table: 'auditEvent';
+            readonly column: 'id';
+          };
+          readonly onCreate: { readonly kind: 'generator'; readonly id: 'uuidv4' };
+        },
+        {
+          readonly ref: {
+            readonly namespace: 'public';
+            readonly table: 'roleRequest';
+            readonly column: 'id';
+          };
+          readonly onCreate: { readonly kind: 'generator'; readonly id: 'uuidv4' };
+        },
+        {
+          readonly ref: {
+            readonly namespace: 'public';
+            readonly table: 'user';
+            readonly column: 'id';
+          };
+          readonly onCreate: { readonly kind: 'generator'; readonly id: 'uuidv4' };
+        },
+        {
+          readonly ref: {
+            readonly namespace: 'public';
+            readonly table: 'user';
+            readonly column: 'updatedAt';
+          };
+          readonly onCreate: { readonly kind: 'generator'; readonly id: 'instantNow' };
+          readonly onUpdate: { readonly kind: 'generator'; readonly id: 'instantNow' };
+        },
+      ];
+    };
+  };
   readonly meta: {};
 
   readonly profileHash: ProfileHash;
