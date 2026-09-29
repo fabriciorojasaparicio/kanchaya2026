@@ -17,9 +17,11 @@
     "infra:down": "docker compose down",
     "infra:logs": "docker compose logs -f",
     "infra:ps": "docker compose ps",
-    "db:generate": "pnpm --filter api exec prisma generate",
-    "db:migrate": "pnpm --filter api exec prisma migrate dev",
-    "db:seed": "pnpm --filter api exec prisma db seed"
+    "db:contract:emit": "pnpm --filter api run db:contract:emit",
+    "db:generate": "pnpm run db:contract:emit",
+    "db:plan": "pnpm --filter api run db:plan",
+    "db:migrate": "pnpm --filter api run db:migrate",
+    "db:verify": "pnpm --filter api run db:verify"
   },
   "devDependencies": {
     "eslint": "^9.39.5",
