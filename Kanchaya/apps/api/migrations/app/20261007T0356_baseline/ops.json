@@ -1,0 +1,2512 @@
+[
+  {
+    "id": "schema.public",
+    "label": "Create schema \"public\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Create schema \"public\"",
+        "sql": "CREATE SCHEMA IF NOT EXISTS \"public\"",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "table.auditEvent",
+    "label": "Create table \"auditEvent\"",
+    "summary": "Creates table \"auditEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "auditEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"auditEvent\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditEvent\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"auditEvent\"",
+        "sql": "CREATE TABLE \"public\".\"auditEvent\" (\n  \"actorUserId\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" text NOT NULL,\n  \"metadata\" json,\n  \"newRole\" text,\n  \"permission\" text,\n  \"previousRole\" text,\n  \"targetUserId\" text NOT NULL,\n  \"type\" text NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"auditEvent_type_check_eb12df8c\" CHECK (\"type\" IN ('ROLE_ASSIGNED', 'ROLE_CHANGED', 'ROLE_REMOVED', 'USER_SUSPENDED', 'USER_REACTIVATED', 'PERMISSION_GRANTED', 'PERMISSION_REVOKED'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"auditEvent\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditEvent\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.auditLog",
+    "label": "Create table \"auditLog\"",
+    "summary": "Creates table \"auditLog\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "auditLog"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"auditLog\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditLog\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"auditLog\"",
+        "sql": "CREATE TABLE \"public\".\"auditLog\" (\n  \"action\" text NOT NULL,\n  \"actorUserId\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"entityId\" text,\n  \"entityType\" text NOT NULL,\n  \"id\" text NOT NULL,\n  \"ipAddress\" text,\n  \"metadata\" json,\n  \"userAgent\" text,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"auditLog\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditLog\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.booking",
+    "label": "Create table \"booking\"",
+    "summary": "Creates table \"booking\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "booking"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"booking\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"booking\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"booking\"",
+        "sql": "CREATE TABLE \"public\".\"booking\" (\n  \"courtId\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"userId\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"booking\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"booking\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.centerManager",
+    "label": "Create table \"centerManager\"",
+    "summary": "Creates table \"centerManager\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "centerManager"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"centerManager\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"centerManager\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"centerManager\"",
+        "sql": "CREATE TABLE \"public\".\"centerManager\" (\n  \"assignedAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"centerId\" text NOT NULL,\n  \"id\" text NOT NULL,\n  \"revokedAt\" timestamptz,\n  \"userId\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"centerManager\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"centerManager\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.court",
+    "label": "Create table \"court\"",
+    "summary": "Creates table \"court\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "court"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"court\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"court\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"court\"",
+        "sql": "CREATE TABLE \"public\".\"court\" (\n  \"centerId\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" text NOT NULL,\n  \"name\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"court\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"court\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.payment",
+    "label": "Create table \"payment\"",
+    "summary": "Creates table \"payment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "payment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"payment\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"payment\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"payment\"",
+        "sql": "CREATE TABLE \"public\".\"payment\" (\n  \"bookingId\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" text NOT NULL,\n  \"userId\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"payment\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"payment\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.profile",
+    "label": "Create table \"profile\"",
+    "summary": "Creates table \"profile\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "profile"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"profile\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"profile\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"profile\"",
+        "sql": "CREATE TABLE \"public\".\"profile\" (\n  \"city\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"displayName\" text,\n  \"firstName\" text NOT NULL,\n  \"id\" text NOT NULL,\n  \"lastName\" text NOT NULL,\n  \"photoUrl\" text,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"userId\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"profile\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"profile\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.role",
+    "label": "Create table \"role\"",
+    "summary": "Creates table \"role\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "role"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"role\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"role\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"role\"",
+        "sql": "CREATE TABLE \"public\".\"role\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"description\" text,\n  \"id\" text NOT NULL,\n  \"name\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"role\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"role\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.roleRequest",
+    "label": "Create table \"roleRequest\"",
+    "summary": "Creates table \"roleRequest\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "roleRequest"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"roleRequest\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"roleRequest\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"roleRequest\"",
+        "sql": "CREATE TABLE \"public\".\"roleRequest\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" text NOT NULL,\n  \"requestedRole\" text NOT NULL,\n  \"requesterUserId\" text NOT NULL,\n  \"resolvedAt\" timestamptz,\n  \"resolvedByUserId\" text,\n  \"status\" text DEFAULT 'PENDING' NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"roleRequest_status_check_56005a61\" CHECK (\"status\" IN ('PENDING', 'APPROVED', 'REJECTED'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"roleRequest\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"roleRequest\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.sportsCenter",
+    "label": "Create table \"sportsCenter\"",
+    "summary": "Creates table \"sportsCenter\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "sportsCenter"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"sportsCenter\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sportsCenter\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"sportsCenter\"",
+        "sql": "CREATE TABLE \"public\".\"sportsCenter\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" text NOT NULL,\n  \"name\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"sportsCenter\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sportsCenter\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.team",
+    "label": "Create table \"team\"",
+    "summary": "Creates table \"team\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "team"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"team\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"team\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"team\"",
+        "sql": "CREATE TABLE \"public\".\"team\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" text NOT NULL,\n  \"name\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"team\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"team\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.teamMember",
+    "label": "Create table \"teamMember\"",
+    "summary": "Creates table \"teamMember\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "teamMember"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"teamMember\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"teamMember\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"teamMember\"",
+        "sql": "CREATE TABLE \"public\".\"teamMember\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" text NOT NULL,\n  \"role\" text DEFAULT 'MEMBER' NOT NULL,\n  \"teamId\" text NOT NULL,\n  \"userId\" text NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"teamMember_role_check_bbc4be0d\" CHECK (\"role\" IN ('OWNER', 'MEMBER'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"teamMember\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"teamMember\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.user",
+    "label": "Create table \"user\"",
+    "summary": "Creates table \"user\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"user\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"user\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"user\"",
+        "sql": "CREATE TABLE \"public\".\"user\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"email\" text NOT NULL,\n  \"emailVerifiedAt\" timestamptz,\n  \"id\" text NOT NULL,\n  \"lastLoginAt\" timestamptz,\n  \"passwordHash\" text NOT NULL,\n  \"phone\" text,\n  \"phoneVerifiedAt\" timestamptz,\n  \"status\" text DEFAULT 'PENDING_VERIFICATION' NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"user_status_check_16f11a70\" CHECK (\"status\" IN ('PENDING_VERIFICATION', 'ACTIVE', 'SUSPENDED', 'DISABLED', 'DELETED'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"user\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"user\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.userRole",
+    "label": "Create table \"userRole\"",
+    "summary": "Creates table \"userRole\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "userRole"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"userRole\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"userRole\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"userRole\"",
+        "sql": "CREATE TABLE \"public\".\"userRole\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" text NOT NULL,\n  \"roleId\" text NOT NULL,\n  \"userId\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"userRole\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"userRole\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.centerManager.centerManager_userId_centerId_key",
+    "label": "Add unique constraint on \"centerManager\" (userId, centerId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "centerManager_userId_centerId_key",
+        "table": "centerManager"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"centerManager_userId_centerId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "centerManager_userId_centerId_key",
+          "public",
+          "\"public\".\"centerManager\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"centerManager_userId_centerId_key\"",
+        "sql": "ALTER TABLE \"public\".\"centerManager\" ADD CONSTRAINT \"centerManager_userId_centerId_key\" UNIQUE (\"userId\", \"centerId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"centerManager_userId_centerId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "centerManager_userId_centerId_key",
+          "public",
+          "\"public\".\"centerManager\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.profile.profile_userId_key",
+    "label": "Add unique constraint on \"profile\" (userId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "profile_userId_key",
+        "table": "profile"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"profile_userId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "profile_userId_key",
+          "public",
+          "\"public\".\"profile\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"profile_userId_key\"",
+        "sql": "ALTER TABLE \"public\".\"profile\" ADD CONSTRAINT \"profile_userId_key\" UNIQUE (\"userId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"profile_userId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "profile_userId_key",
+          "public",
+          "\"public\".\"profile\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.role.role_name_key",
+    "label": "Add unique constraint on \"role\" (name)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "role_name_key",
+        "table": "role"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"role_name_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "role_name_key",
+          "public",
+          "\"public\".\"role\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"role_name_key\"",
+        "sql": "ALTER TABLE \"public\".\"role\" ADD CONSTRAINT \"role_name_key\" UNIQUE (\"name\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"role_name_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "role_name_key",
+          "public",
+          "\"public\".\"role\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.teamMember.teamMember_userId_teamId_key",
+    "label": "Add unique constraint on \"teamMember\" (userId, teamId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "teamMember_userId_teamId_key",
+        "table": "teamMember"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"teamMember_userId_teamId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "teamMember_userId_teamId_key",
+          "public",
+          "\"public\".\"teamMember\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"teamMember_userId_teamId_key\"",
+        "sql": "ALTER TABLE \"public\".\"teamMember\" ADD CONSTRAINT \"teamMember_userId_teamId_key\" UNIQUE (\"userId\", \"teamId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"teamMember_userId_teamId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "teamMember_userId_teamId_key",
+          "public",
+          "\"public\".\"teamMember\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.user.user_email_key",
+    "label": "Add unique constraint on \"user\" (email)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "user_email_key",
+        "table": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"user_email_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "user_email_key",
+          "public",
+          "\"public\".\"user\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"user_email_key\"",
+        "sql": "ALTER TABLE \"public\".\"user\" ADD CONSTRAINT \"user_email_key\" UNIQUE (\"email\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"user_email_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "user_email_key",
+          "public",
+          "\"public\".\"user\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.user.user_phone_key",
+    "label": "Add unique constraint on \"user\" (phone)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "user_phone_key",
+        "table": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"user_phone_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "user_phone_key",
+          "public",
+          "\"public\".\"user\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"user_phone_key\"",
+        "sql": "ALTER TABLE \"public\".\"user\" ADD CONSTRAINT \"user_phone_key\" UNIQUE (\"phone\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"user_phone_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "user_phone_key",
+          "public",
+          "\"public\".\"user\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.userRole.userRole_userId_roleId_key",
+    "label": "Add unique constraint on \"userRole\" (userId, roleId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "userRole_userId_roleId_key",
+        "table": "userRole"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"userRole_userId_roleId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "userRole_userId_roleId_key",
+          "public",
+          "\"public\".\"userRole\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"userRole_userId_roleId_key\"",
+        "sql": "ALTER TABLE \"public\".\"userRole\" ADD CONSTRAINT \"userRole_userId_roleId_key\" UNIQUE (\"userId\", \"roleId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"userRole_userId_roleId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "userRole_userId_roleId_key",
+          "public",
+          "\"public\".\"userRole\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.auditEvent.auditEvent_actorUserId_idx_96dac96c",
+    "label": "Create index \"auditEvent_actorUserId_idx_96dac96c\" on \"auditEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "auditEvent_actorUserId_idx_96dac96c",
+        "table": "auditEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"auditEvent_actorUserId_idx_96dac96c\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditEvent_actorUserId_idx_96dac96c\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"auditEvent_actorUserId_idx_96dac96c\"",
+        "sql": "CREATE INDEX \"auditEvent_actorUserId_idx_96dac96c\" ON \"public\".\"auditEvent\" (\"actorUserId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"auditEvent_actorUserId_idx_96dac96c\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditEvent_actorUserId_idx_96dac96c\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.auditEvent.auditEvent_createdAt_idx_9575dbd7",
+    "label": "Create index \"auditEvent_createdAt_idx_9575dbd7\" on \"auditEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "auditEvent_createdAt_idx_9575dbd7",
+        "table": "auditEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"auditEvent_createdAt_idx_9575dbd7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditEvent_createdAt_idx_9575dbd7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"auditEvent_createdAt_idx_9575dbd7\"",
+        "sql": "CREATE INDEX \"auditEvent_createdAt_idx_9575dbd7\" ON \"public\".\"auditEvent\" (\"createdAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"auditEvent_createdAt_idx_9575dbd7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditEvent_createdAt_idx_9575dbd7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.auditEvent.auditEvent_targetUserId_idx_e0d638f0",
+    "label": "Create index \"auditEvent_targetUserId_idx_e0d638f0\" on \"auditEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "auditEvent_targetUserId_idx_e0d638f0",
+        "table": "auditEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"auditEvent_targetUserId_idx_e0d638f0\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditEvent_targetUserId_idx_e0d638f0\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"auditEvent_targetUserId_idx_e0d638f0\"",
+        "sql": "CREATE INDEX \"auditEvent_targetUserId_idx_e0d638f0\" ON \"public\".\"auditEvent\" (\"targetUserId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"auditEvent_targetUserId_idx_e0d638f0\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditEvent_targetUserId_idx_e0d638f0\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.auditEvent.auditEvent_type_idx_b6b604ea",
+    "label": "Create index \"auditEvent_type_idx_b6b604ea\" on \"auditEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "auditEvent_type_idx_b6b604ea",
+        "table": "auditEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"auditEvent_type_idx_b6b604ea\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditEvent_type_idx_b6b604ea\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"auditEvent_type_idx_b6b604ea\"",
+        "sql": "CREATE INDEX \"auditEvent_type_idx_b6b604ea\" ON \"public\".\"auditEvent\" (\"type\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"auditEvent_type_idx_b6b604ea\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditEvent_type_idx_b6b604ea\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.auditLog.auditLog_actorUserId_idx_96dac96c",
+    "label": "Create index \"auditLog_actorUserId_idx_96dac96c\" on \"auditLog\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "auditLog_actorUserId_idx_96dac96c",
+        "table": "auditLog"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"auditLog_actorUserId_idx_96dac96c\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditLog_actorUserId_idx_96dac96c\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"auditLog_actorUserId_idx_96dac96c\"",
+        "sql": "CREATE INDEX \"auditLog_actorUserId_idx_96dac96c\" ON \"public\".\"auditLog\" (\"actorUserId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"auditLog_actorUserId_idx_96dac96c\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditLog_actorUserId_idx_96dac96c\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.auditLog.auditLog_createdAt_idx_9575dbd7",
+    "label": "Create index \"auditLog_createdAt_idx_9575dbd7\" on \"auditLog\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "auditLog_createdAt_idx_9575dbd7",
+        "table": "auditLog"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"auditLog_createdAt_idx_9575dbd7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditLog_createdAt_idx_9575dbd7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"auditLog_createdAt_idx_9575dbd7\"",
+        "sql": "CREATE INDEX \"auditLog_createdAt_idx_9575dbd7\" ON \"public\".\"auditLog\" (\"createdAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"auditLog_createdAt_idx_9575dbd7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditLog_createdAt_idx_9575dbd7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.auditLog.auditLog_entityType_entityId_idx_ea0fa809",
+    "label": "Create index \"auditLog_entityType_entityId_idx_ea0fa809\" on \"auditLog\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "auditLog_entityType_entityId_idx_ea0fa809",
+        "table": "auditLog"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"auditLog_entityType_entityId_idx_ea0fa809\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditLog_entityType_entityId_idx_ea0fa809\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"auditLog_entityType_entityId_idx_ea0fa809\"",
+        "sql": "CREATE INDEX \"auditLog_entityType_entityId_idx_ea0fa809\" ON \"public\".\"auditLog\" (\"entityType\", \"entityId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"auditLog_entityType_entityId_idx_ea0fa809\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"auditLog_entityType_entityId_idx_ea0fa809\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.booking.booking_courtId_idx_50c15a04",
+    "label": "Create index \"booking_courtId_idx_50c15a04\" on \"booking\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "booking_courtId_idx_50c15a04",
+        "table": "booking"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"booking_courtId_idx_50c15a04\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"booking_courtId_idx_50c15a04\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"booking_courtId_idx_50c15a04\"",
+        "sql": "CREATE INDEX \"booking_courtId_idx_50c15a04\" ON \"public\".\"booking\" (\"courtId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"booking_courtId_idx_50c15a04\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"booking_courtId_idx_50c15a04\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.booking.booking_userId_idx_a489d58a",
+    "label": "Create index \"booking_userId_idx_a489d58a\" on \"booking\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "booking_userId_idx_a489d58a",
+        "table": "booking"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"booking_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"booking_userId_idx_a489d58a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"booking_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"booking_userId_idx_a489d58a\" ON \"public\".\"booking\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"booking_userId_idx_a489d58a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"booking_userId_idx_a489d58a\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.centerManager.centerManager_centerId_idx_57ced294",
+    "label": "Create index \"centerManager_centerId_idx_57ced294\" on \"centerManager\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "centerManager_centerId_idx_57ced294",
+        "table": "centerManager"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"centerManager_centerId_idx_57ced294\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"centerManager_centerId_idx_57ced294\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"centerManager_centerId_idx_57ced294\"",
+        "sql": "CREATE INDEX \"centerManager_centerId_idx_57ced294\" ON \"public\".\"centerManager\" (\"centerId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"centerManager_centerId_idx_57ced294\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"centerManager_centerId_idx_57ced294\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.centerManager.centerManager_userId_idx_a489d58a",
+    "label": "Create index \"centerManager_userId_idx_a489d58a\" on \"centerManager\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "centerManager_userId_idx_a489d58a",
+        "table": "centerManager"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"centerManager_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"centerManager_userId_idx_a489d58a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"centerManager_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"centerManager_userId_idx_a489d58a\" ON \"public\".\"centerManager\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"centerManager_userId_idx_a489d58a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"centerManager_userId_idx_a489d58a\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.court.court_centerId_idx_57ced294",
+    "label": "Create index \"court_centerId_idx_57ced294\" on \"court\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "court_centerId_idx_57ced294",
+        "table": "court"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"court_centerId_idx_57ced294\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"court_centerId_idx_57ced294\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"court_centerId_idx_57ced294\"",
+        "sql": "CREATE INDEX \"court_centerId_idx_57ced294\" ON \"public\".\"court\" (\"centerId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"court_centerId_idx_57ced294\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"court_centerId_idx_57ced294\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.payment.payment_bookingId_idx_17848f4a",
+    "label": "Create index \"payment_bookingId_idx_17848f4a\" on \"payment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "payment_bookingId_idx_17848f4a",
+        "table": "payment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"payment_bookingId_idx_17848f4a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"payment_bookingId_idx_17848f4a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"payment_bookingId_idx_17848f4a\"",
+        "sql": "CREATE INDEX \"payment_bookingId_idx_17848f4a\" ON \"public\".\"payment\" (\"bookingId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"payment_bookingId_idx_17848f4a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"payment_bookingId_idx_17848f4a\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.payment.payment_userId_idx_a489d58a",
+    "label": "Create index \"payment_userId_idx_a489d58a\" on \"payment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "payment_userId_idx_a489d58a",
+        "table": "payment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"payment_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"payment_userId_idx_a489d58a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"payment_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"payment_userId_idx_a489d58a\" ON \"public\".\"payment\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"payment_userId_idx_a489d58a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"payment_userId_idx_a489d58a\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.roleRequest.roleRequest_requestedRole_idx_5db07204",
+    "label": "Create index \"roleRequest_requestedRole_idx_5db07204\" on \"roleRequest\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "roleRequest_requestedRole_idx_5db07204",
+        "table": "roleRequest"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"roleRequest_requestedRole_idx_5db07204\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"roleRequest_requestedRole_idx_5db07204\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"roleRequest_requestedRole_idx_5db07204\"",
+        "sql": "CREATE INDEX \"roleRequest_requestedRole_idx_5db07204\" ON \"public\".\"roleRequest\" (\"requestedRole\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"roleRequest_requestedRole_idx_5db07204\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"roleRequest_requestedRole_idx_5db07204\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.roleRequest.roleRequest_requesterUserId_idx_75bb1080",
+    "label": "Create index \"roleRequest_requesterUserId_idx_75bb1080\" on \"roleRequest\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "roleRequest_requesterUserId_idx_75bb1080",
+        "table": "roleRequest"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"roleRequest_requesterUserId_idx_75bb1080\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"roleRequest_requesterUserId_idx_75bb1080\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"roleRequest_requesterUserId_idx_75bb1080\"",
+        "sql": "CREATE INDEX \"roleRequest_requesterUserId_idx_75bb1080\" ON \"public\".\"roleRequest\" (\"requesterUserId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"roleRequest_requesterUserId_idx_75bb1080\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"roleRequest_requesterUserId_idx_75bb1080\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.roleRequest.roleRequest_resolvedByUserId_idx_fe6c7b89",
+    "label": "Create index \"roleRequest_resolvedByUserId_idx_fe6c7b89\" on \"roleRequest\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "roleRequest_resolvedByUserId_idx_fe6c7b89",
+        "table": "roleRequest"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"roleRequest_resolvedByUserId_idx_fe6c7b89\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"roleRequest_resolvedByUserId_idx_fe6c7b89\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"roleRequest_resolvedByUserId_idx_fe6c7b89\"",
+        "sql": "CREATE INDEX \"roleRequest_resolvedByUserId_idx_fe6c7b89\" ON \"public\".\"roleRequest\" (\"resolvedByUserId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"roleRequest_resolvedByUserId_idx_fe6c7b89\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"roleRequest_resolvedByUserId_idx_fe6c7b89\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.roleRequest.roleRequest_status_idx_e98638ab",
+    "label": "Create index \"roleRequest_status_idx_e98638ab\" on \"roleRequest\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "roleRequest_status_idx_e98638ab",
+        "table": "roleRequest"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"roleRequest_status_idx_e98638ab\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"roleRequest_status_idx_e98638ab\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"roleRequest_status_idx_e98638ab\"",
+        "sql": "CREATE INDEX \"roleRequest_status_idx_e98638ab\" ON \"public\".\"roleRequest\" (\"status\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"roleRequest_status_idx_e98638ab\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"roleRequest_status_idx_e98638ab\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.teamMember.teamMember_teamId_idx_f2b72ab3",
+    "label": "Create index \"teamMember_teamId_idx_f2b72ab3\" on \"teamMember\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "teamMember_teamId_idx_f2b72ab3",
+        "table": "teamMember"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"teamMember_teamId_idx_f2b72ab3\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"teamMember_teamId_idx_f2b72ab3\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"teamMember_teamId_idx_f2b72ab3\"",
+        "sql": "CREATE INDEX \"teamMember_teamId_idx_f2b72ab3\" ON \"public\".\"teamMember\" (\"teamId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"teamMember_teamId_idx_f2b72ab3\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"teamMember_teamId_idx_f2b72ab3\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.teamMember.teamMember_userId_idx_a489d58a",
+    "label": "Create index \"teamMember_userId_idx_a489d58a\" on \"teamMember\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "teamMember_userId_idx_a489d58a",
+        "table": "teamMember"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"teamMember_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"teamMember_userId_idx_a489d58a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"teamMember_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"teamMember_userId_idx_a489d58a\" ON \"public\".\"teamMember\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"teamMember_userId_idx_a489d58a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"teamMember_userId_idx_a489d58a\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.user.user_status_idx_e98638ab",
+    "label": "Create index \"user_status_idx_e98638ab\" on \"user\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "user_status_idx_e98638ab",
+        "table": "user"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"user_status_idx_e98638ab\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"user_status_idx_e98638ab\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"user_status_idx_e98638ab\"",
+        "sql": "CREATE INDEX \"user_status_idx_e98638ab\" ON \"public\".\"user\" (\"status\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"user_status_idx_e98638ab\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"user_status_idx_e98638ab\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.userRole.userRole_roleId_idx_ffccc9a4",
+    "label": "Create index \"userRole_roleId_idx_ffccc9a4\" on \"userRole\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "userRole_roleId_idx_ffccc9a4",
+        "table": "userRole"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"userRole_roleId_idx_ffccc9a4\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"userRole_roleId_idx_ffccc9a4\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"userRole_roleId_idx_ffccc9a4\"",
+        "sql": "CREATE INDEX \"userRole_roleId_idx_ffccc9a4\" ON \"public\".\"userRole\" (\"roleId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"userRole_roleId_idx_ffccc9a4\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"userRole_roleId_idx_ffccc9a4\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.userRole.userRole_userId_idx_a489d58a",
+    "label": "Create index \"userRole_userId_idx_a489d58a\" on \"userRole\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "userRole_userId_idx_a489d58a",
+        "table": "userRole"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"userRole_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"userRole_userId_idx_a489d58a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"userRole_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"userRole_userId_idx_a489d58a\" ON \"public\".\"userRole\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"userRole_userId_idx_a489d58a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"userRole_userId_idx_a489d58a\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.auditEvent.auditEvent_actorUserId_fkey",
+    "label": "Add foreign key \"auditEvent_actorUserId_fkey\" on \"auditEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "auditEvent_actorUserId_fkey",
+        "table": "auditEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"auditEvent_actorUserId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "auditEvent_actorUserId_fkey",
+          "public",
+          "\"public\".\"auditEvent\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"auditEvent_actorUserId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"auditEvent\"\nADD CONSTRAINT \"auditEvent_actorUserId_fkey\"\nFOREIGN KEY (\"actorUserId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"auditEvent_actorUserId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "auditEvent_actorUserId_fkey",
+          "public",
+          "\"public\".\"auditEvent\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.auditEvent.auditEvent_targetUserId_fkey",
+    "label": "Add foreign key \"auditEvent_targetUserId_fkey\" on \"auditEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "auditEvent_targetUserId_fkey",
+        "table": "auditEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"auditEvent_targetUserId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "auditEvent_targetUserId_fkey",
+          "public",
+          "\"public\".\"auditEvent\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"auditEvent_targetUserId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"auditEvent\"\nADD CONSTRAINT \"auditEvent_targetUserId_fkey\"\nFOREIGN KEY (\"targetUserId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"auditEvent_targetUserId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "auditEvent_targetUserId_fkey",
+          "public",
+          "\"public\".\"auditEvent\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.auditLog.auditLog_actorUserId_fkey",
+    "label": "Add foreign key \"auditLog_actorUserId_fkey\" on \"auditLog\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "auditLog_actorUserId_fkey",
+        "table": "auditLog"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"auditLog_actorUserId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "auditLog_actorUserId_fkey",
+          "public",
+          "\"public\".\"auditLog\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"auditLog_actorUserId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"auditLog\"\nADD CONSTRAINT \"auditLog_actorUserId_fkey\"\nFOREIGN KEY (\"actorUserId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"auditLog_actorUserId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "auditLog_actorUserId_fkey",
+          "public",
+          "\"public\".\"auditLog\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.booking.booking_userId_fkey",
+    "label": "Add foreign key \"booking_userId_fkey\" on \"booking\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "booking_userId_fkey",
+        "table": "booking"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"booking_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "booking_userId_fkey",
+          "public",
+          "\"public\".\"booking\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"booking_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"booking\"\nADD CONSTRAINT \"booking_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"booking_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "booking_userId_fkey",
+          "public",
+          "\"public\".\"booking\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.booking.booking_courtId_fkey",
+    "label": "Add foreign key \"booking_courtId_fkey\" on \"booking\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "booking_courtId_fkey",
+        "table": "booking"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"booking_courtId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "booking_courtId_fkey",
+          "public",
+          "\"public\".\"booking\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"booking_courtId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"booking\"\nADD CONSTRAINT \"booking_courtId_fkey\"\nFOREIGN KEY (\"courtId\")\nREFERENCES \"public\".\"court\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"booking_courtId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "booking_courtId_fkey",
+          "public",
+          "\"public\".\"booking\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.centerManager.centerManager_userId_fkey",
+    "label": "Add foreign key \"centerManager_userId_fkey\" on \"centerManager\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "centerManager_userId_fkey",
+        "table": "centerManager"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"centerManager_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "centerManager_userId_fkey",
+          "public",
+          "\"public\".\"centerManager\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"centerManager_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"centerManager\"\nADD CONSTRAINT \"centerManager_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"centerManager_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "centerManager_userId_fkey",
+          "public",
+          "\"public\".\"centerManager\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.centerManager.centerManager_centerId_fkey",
+    "label": "Add foreign key \"centerManager_centerId_fkey\" on \"centerManager\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "centerManager_centerId_fkey",
+        "table": "centerManager"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"centerManager_centerId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "centerManager_centerId_fkey",
+          "public",
+          "\"public\".\"centerManager\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"centerManager_centerId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"centerManager\"\nADD CONSTRAINT \"centerManager_centerId_fkey\"\nFOREIGN KEY (\"centerId\")\nREFERENCES \"public\".\"sportsCenter\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"centerManager_centerId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "centerManager_centerId_fkey",
+          "public",
+          "\"public\".\"centerManager\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.court.court_centerId_fkey",
+    "label": "Add foreign key \"court_centerId_fkey\" on \"court\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "court_centerId_fkey",
+        "table": "court"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"court_centerId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "court_centerId_fkey",
+          "public",
+          "\"public\".\"court\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"court_centerId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"court\"\nADD CONSTRAINT \"court_centerId_fkey\"\nFOREIGN KEY (\"centerId\")\nREFERENCES \"public\".\"sportsCenter\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"court_centerId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "court_centerId_fkey",
+          "public",
+          "\"public\".\"court\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.payment.payment_userId_fkey",
+    "label": "Add foreign key \"payment_userId_fkey\" on \"payment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "payment_userId_fkey",
+        "table": "payment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"payment_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "payment_userId_fkey",
+          "public",
+          "\"public\".\"payment\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"payment_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"payment\"\nADD CONSTRAINT \"payment_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"payment_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "payment_userId_fkey",
+          "public",
+          "\"public\".\"payment\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.payment.payment_bookingId_fkey",
+    "label": "Add foreign key \"payment_bookingId_fkey\" on \"payment\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "payment_bookingId_fkey",
+        "table": "payment"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"payment_bookingId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "payment_bookingId_fkey",
+          "public",
+          "\"public\".\"payment\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"payment_bookingId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"payment\"\nADD CONSTRAINT \"payment_bookingId_fkey\"\nFOREIGN KEY (\"bookingId\")\nREFERENCES \"public\".\"booking\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"payment_bookingId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "payment_bookingId_fkey",
+          "public",
+          "\"public\".\"payment\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.profile.profile_userId_fkey",
+    "label": "Add foreign key \"profile_userId_fkey\" on \"profile\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "profile_userId_fkey",
+        "table": "profile"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"profile_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "profile_userId_fkey",
+          "public",
+          "\"public\".\"profile\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"profile_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"profile\"\nADD CONSTRAINT \"profile_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"profile_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "profile_userId_fkey",
+          "public",
+          "\"public\".\"profile\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.roleRequest.roleRequest_requesterUserId_fkey",
+    "label": "Add foreign key \"roleRequest_requesterUserId_fkey\" on \"roleRequest\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "roleRequest_requesterUserId_fkey",
+        "table": "roleRequest"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"roleRequest_requesterUserId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "roleRequest_requesterUserId_fkey",
+          "public",
+          "\"public\".\"roleRequest\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"roleRequest_requesterUserId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"roleRequest\"\nADD CONSTRAINT \"roleRequest_requesterUserId_fkey\"\nFOREIGN KEY (\"requesterUserId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"roleRequest_requesterUserId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "roleRequest_requesterUserId_fkey",
+          "public",
+          "\"public\".\"roleRequest\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.roleRequest.roleRequest_resolvedByUserId_fkey",
+    "label": "Add foreign key \"roleRequest_resolvedByUserId_fkey\" on \"roleRequest\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "roleRequest_resolvedByUserId_fkey",
+        "table": "roleRequest"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"roleRequest_resolvedByUserId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "roleRequest_resolvedByUserId_fkey",
+          "public",
+          "\"public\".\"roleRequest\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"roleRequest_resolvedByUserId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"roleRequest\"\nADD CONSTRAINT \"roleRequest_resolvedByUserId_fkey\"\nFOREIGN KEY (\"resolvedByUserId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"roleRequest_resolvedByUserId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "roleRequest_resolvedByUserId_fkey",
+          "public",
+          "\"public\".\"roleRequest\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.roleRequest.roleRequest_requestedRole_fkey",
+    "label": "Add foreign key \"roleRequest_requestedRole_fkey\" on \"roleRequest\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "roleRequest_requestedRole_fkey",
+        "table": "roleRequest"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"roleRequest_requestedRole_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "roleRequest_requestedRole_fkey",
+          "public",
+          "\"public\".\"roleRequest\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"roleRequest_requestedRole_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"roleRequest\"\nADD CONSTRAINT \"roleRequest_requestedRole_fkey\"\nFOREIGN KEY (\"requestedRole\")\nREFERENCES \"public\".\"role\" (\"name\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"roleRequest_requestedRole_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "roleRequest_requestedRole_fkey",
+          "public",
+          "\"public\".\"roleRequest\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.teamMember.teamMember_userId_fkey",
+    "label": "Add foreign key \"teamMember_userId_fkey\" on \"teamMember\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "teamMember_userId_fkey",
+        "table": "teamMember"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"teamMember_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "teamMember_userId_fkey",
+          "public",
+          "\"public\".\"teamMember\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"teamMember_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"teamMember\"\nADD CONSTRAINT \"teamMember_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"teamMember_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "teamMember_userId_fkey",
+          "public",
+          "\"public\".\"teamMember\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.teamMember.teamMember_teamId_fkey",
+    "label": "Add foreign key \"teamMember_teamId_fkey\" on \"teamMember\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "teamMember_teamId_fkey",
+        "table": "teamMember"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"teamMember_teamId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "teamMember_teamId_fkey",
+          "public",
+          "\"public\".\"teamMember\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"teamMember_teamId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"teamMember\"\nADD CONSTRAINT \"teamMember_teamId_fkey\"\nFOREIGN KEY (\"teamId\")\nREFERENCES \"public\".\"team\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"teamMember_teamId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "teamMember_teamId_fkey",
+          "public",
+          "\"public\".\"teamMember\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.userRole.userRole_userId_fkey",
+    "label": "Add foreign key \"userRole_userId_fkey\" on \"userRole\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "userRole_userId_fkey",
+        "table": "userRole"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"userRole_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "userRole_userId_fkey",
+          "public",
+          "\"public\".\"userRole\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"userRole_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"userRole\"\nADD CONSTRAINT \"userRole_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"userRole_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "userRole_userId_fkey",
+          "public",
+          "\"public\".\"userRole\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.userRole.userRole_roleId_fkey",
+    "label": "Add foreign key \"userRole_roleId_fkey\" on \"userRole\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "userRole_roleId_fkey",
+        "table": "userRole"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"userRole_roleId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "userRole_roleId_fkey",
+          "public",
+          "\"public\".\"userRole\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"userRole_roleId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"userRole\"\nADD CONSTRAINT \"userRole_roleId_fkey\"\nFOREIGN KEY (\"roleId\")\nREFERENCES \"public\".\"role\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"userRole_roleId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "userRole_roleId_fkey",
+          "public",
+          "\"public\".\"userRole\""
+        ]
+      }
+    ]
+  }
+]

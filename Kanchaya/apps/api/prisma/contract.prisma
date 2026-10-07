@@ -1,48 +1,22 @@
 // use prisma-8
-// Contract inferred from the live database schema. Edit as needed, then run `prisma contract emit`.
-
-enum Role {
-	PLAYER
-	VENUE_MANAGER
-	TOURNAMENT_ORGANIZER
-	PLATFORM_ADMIN
-}
 
 enum UserStatus {
+	PENDING_VERIFICATION
 	ACTIVE
 	SUSPENDED
+	DISABLED
+	DELETED
 }
 
-model User {
-	id                   String        @id @default(uuid())
-	email                String        @unique
-	role                 Role          @default(PLAYER)
-	status               UserStatus    @default(ACTIVE)
-	createdAt            DateTime      @default(now())
-	updatedAt            temporal.updatedAt()
-	roleRequests         RoleRequest[]
-	auditEventsAsActor   AuditEvent[]  @relation("AuditActor")
-	auditEventsAsTarget  AuditEvent[]  @relation("AuditTarget")
+enum TeamMemberRole {
+	OWNER
+	MEMBER
 }
 
 enum RoleRequestStatus {
 	PENDING
 	APPROVED
 	REJECTED
-}
-
-model RoleRequest {
-	id               String            @id @default(uuid())
-	requesterUserId  String
-	requestedRole    Role
-	status           RoleRequestStatus @default(PENDING)
-	createdAt        DateTime          @default(now())
-	resolvedAt       DateTime?
-	resolvedByUserId String?
-	requester        User              @relation(fields: [requesterUserId], references: [id])
-
-	@@index([requesterUserId])
-	@@index([status])
 }
 
 enum AuditEventType {
@@ -55,13 +29,189 @@ enum AuditEventType {
 	PERMISSION_REVOKED
 }
 
+model User {
+	id                    String           @id @default(uuid())
+	email                 String           @unique
+	phone                 String?          @unique
+	passwordHash          String
+	status                UserStatus       @default(PENDING_VERIFICATION)
+	emailVerifiedAt       DateTime?
+	phoneVerifiedAt       DateTime?
+	lastLoginAt           DateTime?
+	createdAt             DateTime         @default(now())
+	updatedAt             temporal.updatedAt()
+	profile               Profile?
+	roles                 UserRole[]
+	managedCenters        CenterManager[]
+	teamMemberships       TeamMember[]
+	bookings              Booking[]
+	payments              Payment[]
+	roleRequests          RoleRequest[]     @relation("RoleRequester")
+	resolvedRoleRequests  RoleRequest[]     @relation("RoleResolver")
+	auditLogs             AuditLog[]        @relation("AuditLogActor")
+	auditEventsAsActor    AuditEvent[]      @relation("AuditActor")
+	auditEventsAsTarget   AuditEvent[]      @relation("AuditTarget")
+
+	@@index([status])
+}
+
+model Profile {
+	id          String   @id @default(uuid())
+	userId      String   @unique
+	firstName   String
+	lastName    String
+	displayName String?
+	photoUrl    String?
+	city        String?
+	createdAt   DateTime @default(now())
+	updatedAt   temporal.updatedAt()
+	user        User     @relation(fields: [userId], references: [id])
+}
+
+model Role {
+	id           String        @id @default(uuid())
+	name         String        @unique
+	description  String?
+	createdAt    DateTime      @default(now())
+	users        UserRole[]
+	roleRequests RoleRequest[]
+}
+
+model UserRole {
+	id        String   @id @default(uuid())
+	userId    String
+	roleId    String
+	createdAt DateTime @default(now())
+	user      User     @relation(fields: [userId], references: [id])
+	role      Role     @relation(fields: [roleId], references: [id])
+
+	@@unique([userId, roleId])
+	@@index([roleId])
+}
+
+model SportsCenter {
+	id        String          @id @default(uuid())
+	name      String
+	createdAt DateTime        @default(now())
+	updatedAt temporal.updatedAt()
+	managers  CenterManager[]
+	courts    Court[]
+}
+
+model CenterManager {
+	id         String       @id @default(uuid())
+	userId     String
+	centerId   String
+	assignedAt DateTime     @default(now())
+	revokedAt  DateTime?
+	user       User         @relation(fields: [userId], references: [id])
+	center     SportsCenter @relation(fields: [centerId], references: [id])
+
+	@@unique([userId, centerId])
+	@@index([centerId])
+	@@index([userId])
+}
+
+model Court {
+	id        String       @id @default(uuid())
+	centerId  String
+	name      String
+	createdAt DateTime     @default(now())
+	updatedAt temporal.updatedAt()
+	center    SportsCenter @relation(fields: [centerId], references: [id])
+	bookings  Booking[]
+
+	@@index([centerId])
+}
+
+model Team {
+	id        String       @id @default(uuid())
+	name      String
+	createdAt DateTime     @default(now())
+	updatedAt temporal.updatedAt()
+	members   TeamMember[]
+}
+
+model TeamMember {
+	id        String         @id @default(uuid())
+	userId    String
+	teamId    String
+	role      TeamMemberRole @default(MEMBER)
+	createdAt DateTime       @default(now())
+	user      User           @relation(fields: [userId], references: [id])
+	team      Team           @relation(fields: [teamId], references: [id])
+
+	@@unique([userId, teamId])
+	@@index([teamId])
+	@@index([userId])
+}
+
+model Booking {
+	id        String   @id @default(uuid())
+	userId    String
+	courtId   String
+	createdAt DateTime @default(now())
+	updatedAt temporal.updatedAt()
+	user      User     @relation(fields: [userId], references: [id])
+	court     Court    @relation(fields: [courtId], references: [id])
+	payments  Payment[]
+
+	@@index([userId])
+	@@index([courtId])
+}
+
+model Payment {
+	id        String   @id @default(uuid())
+	userId    String
+	bookingId String
+	createdAt DateTime @default(now())
+	user      User     @relation(fields: [userId], references: [id])
+	booking   Booking  @relation(fields: [bookingId], references: [id])
+
+	@@index([userId])
+	@@index([bookingId])
+}
+
+model AuditLog {
+	id          String   @id @default(uuid())
+	actorUserId String?
+	action      String
+	entityType  String
+	entityId    String?
+	metadata    Json?
+	ipAddress   String?
+	userAgent   String?
+	createdAt   DateTime @default(now())
+	actor       User?    @relation("AuditLogActor", fields: [actorUserId], references: [id])
+
+	@@index([actorUserId])
+	@@index([entityType, entityId])
+	@@index([createdAt])
+}
+
+model RoleRequest {
+	id               String            @id @default(uuid())
+	requesterUserId  String
+	requestedRole    String
+	status           RoleRequestStatus @default(PENDING)
+	createdAt        DateTime          @default(now())
+	resolvedAt       DateTime?
+	resolvedByUserId String?
+	requester        User              @relation("RoleRequester", fields: [requesterUserId], references: [id])
+	resolvedBy       User?             @relation("RoleResolver", fields: [resolvedByUserId], references: [id])
+	role             Role              @relation(fields: [requestedRole], references: [name])
+
+	@@index([requesterUserId])
+	@@index([status])
+}
+
 model AuditEvent {
 	id           String         @id @default(uuid())
 	type         AuditEventType
 	actorUserId  String
 	targetUserId String
-	previousRole Role?
-	newRole      Role?
+	previousRole String?
+	newRole      String?
 	permission   String?
 	metadata     Json?
 	createdAt    DateTime       @default(now())

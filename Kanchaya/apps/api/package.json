@@ -17,6 +17,7 @@
     "db:plan": "prisma migration plan",
     "db:migrate": "prisma db migrate",
     "db:verify": "prisma db verify",
+    "db:seed": "ts-node prisma/seed.ts",
     "lint": "oxlint --type-aware src/ test/",
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
     "test:watch": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --watch",
