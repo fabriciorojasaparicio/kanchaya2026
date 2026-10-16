@@ -1,7 +1,9 @@
-﻿import "dotenv/config";
+﻿import { config } from "dotenv";
 import { Client } from "pg";
-import argon2 from "argon2";
+import { hashPassword } from "../src/auth/password-hash";
 import { randomUUID } from "node:crypto";
+
+config({ path: "../../.env" });
 
 const DATABASE_URL = process.env.DATABASE_URL;
 
@@ -40,7 +42,10 @@ const roles = [
   },
 ];
 
-const TEST_PASSWORD = "KanchaYa123!";
+const SEED_PASSWORD = process.env.SEED_PASSWORD;
+if (!SEED_PASSWORD || Buffer.byteLength(SEED_PASSWORD, "utf8") < 12) {
+  throw new Error("SEED_PASSWORD debe configurarse con al menos 12 bytes.");
+}
 
 async function main() {
   const client = new Client({ connectionString: DATABASE_URL });
@@ -50,7 +55,7 @@ async function main() {
   try {
     await client.query("BEGIN");
 
-    const passwordHash = await argon2.hash(TEST_PASSWORD);
+    const passwordHash = await hashPassword(SEED_PASSWORD);
 
     for (const roleData of roles) {
       const roleResult = await client.query(

@@ -35,7 +35,9 @@ export class PermissionsGuard implements CanActivate {
       );
 
     if (!requiredPermissions?.length) {
-      return true;
+      // This guard is applied explicitly to protected controllers. Missing
+      // policy metadata is a configuration error and must fail closed.
+      throw new ForbiddenException("Route permissions are not configured");
     }
 
     const request = context

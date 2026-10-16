@@ -68,6 +68,18 @@ describe("PermissionsGuard", () => {
     );
   });
 
+  it("fails closed when a guarded route has no permission metadata", () => {
+    const handler = () => undefined;
+    const controller = class TestController {};
+    const context = {
+      getHandler: () => handler,
+      getClass: () => controller,
+      switchToHttp: () => ({ getRequest: () => ({}) }),
+    } as unknown as ExecutionContext;
+
+    expect(() => guard.canActivate(context)).toThrow(ForbiddenException);
+  });
+
   it("rejects user without required permission", () => {
     const context = createContext({
       id: "admin-1",

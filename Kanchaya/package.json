@@ -21,9 +21,11 @@
     "db:generate": "pnpm run db:contract:emit",
     "db:plan": "pnpm --filter api run db:plan",
     "db:migrate": "pnpm --filter api run db:migrate",
+    "db:seed": "pnpm --filter api run db:seed",
     "db:verify": "pnpm --filter api run db:verify"
   },
   "devDependencies": {
+    "@playwright/cli": "^0.1.22",
     "eslint": "^9.39.5",
     "husky": "^9.1.7",
     "lint-staged": "^17.5.1",

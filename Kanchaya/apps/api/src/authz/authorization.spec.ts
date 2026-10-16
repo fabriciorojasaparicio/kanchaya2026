@@ -18,6 +18,18 @@ describe("authorization", () => {
     ).toBe(false);
   });
 
+  it("limits privileged permissions to platform administrators", () => {
+    for (const role of [Role.PLAYER, Role.VENUE_MANAGER, Role.TOURNAMENT_ORGANIZER]) {
+      expect(hasPermission(role, Permission.USER_MANAGE)).toBe(false);
+      expect(hasPermission(role, Permission.ROLE_MANAGE)).toBe(false);
+      expect(hasPermission(role, Permission.AUDIT_READ)).toBe(false);
+    }
+
+    expect(hasPermission(Role.PLATFORM_ADMIN, Permission.USER_MANAGE)).toBe(true);
+    expect(hasPermission(Role.PLATFORM_ADMIN, Permission.ROLE_MANAGE)).toBe(true);
+    expect(hasPermission(Role.PLATFORM_ADMIN, Permission.AUDIT_READ)).toBe(true);
+  });
+
   it("allows a user to access their own resource", () => {
     expect(
       canAccessScope(

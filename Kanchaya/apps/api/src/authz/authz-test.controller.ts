@@ -3,9 +3,10 @@ import { RequirePermissions } from "./decorators/require-permissions.decorator";
 import { AuthorizationScope } from "./scopes";
 import { Permission } from "./permissions";
 import { PermissionsGuard } from "./guards/permissions.guard";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
 @Controller("authz-test")
-@UseGuards(PermissionsGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 export class AuthzTestController {
   @Get("reservation")
   @RequirePermissions({
