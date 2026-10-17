@@ -1,0 +1,407 @@
+[
+  {
+    "id": "table.courtCharacteristic",
+    "label": "Create table \"courtCharacteristic\"",
+    "summary": "Creates table \"courtCharacteristic\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "courtCharacteristic"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"courtCharacteristic\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"courtCharacteristic\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"courtCharacteristic\"",
+        "sql": "CREATE TABLE \"public\".\"courtCharacteristic\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" text NOT NULL,\n  \"isActive\" bool DEFAULT true NOT NULL,\n  \"name\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"courtCharacteristic\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"courtCharacteristic\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.courtCharacteristicOnCourt",
+    "label": "Create table \"courtCharacteristicOnCourt\"",
+    "summary": "Creates table \"courtCharacteristicOnCourt\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "courtCharacteristicOnCourt"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"courtCharacteristicOnCourt\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"courtCharacteristicOnCourt\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"courtCharacteristicOnCourt\"",
+        "sql": "CREATE TABLE \"public\".\"courtCharacteristicOnCourt\" (\n  \"assignedAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"characteristicId\" text NOT NULL,\n  \"courtId\" text NOT NULL,\n  PRIMARY KEY (\"courtId\", \"characteristicId\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"courtCharacteristicOnCourt\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"courtCharacteristicOnCourt\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.court.status",
+    "label": "Add column \"status\" to \"court\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "status",
+        "table": "court"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"status\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "court",
+          "status"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"status\"",
+        "sql": "ALTER TABLE \"public\".\"court\" ADD COLUMN \"status\" text DEFAULT 'ENABLED' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"status\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "court",
+          "status"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.court.court_status_check_63d6ad0b",
+    "label": "Add check constraint \"court_status_check_63d6ad0b\" on \"court\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "court_status_check_63d6ad0b",
+        "table": "court"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"court_status_check_63d6ad0b\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "court_status_check_63d6ad0b",
+          "public",
+          "\"public\".\"court\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"court_status_check_63d6ad0b\"",
+        "sql": "ALTER TABLE \"public\".\"court\" ADD CONSTRAINT \"court_status_check_63d6ad0b\" CHECK (\"status\" IN ('ENABLED', 'DISABLED', 'MAINTENANCE'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"court_status_check_63d6ad0b\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "court_status_check_63d6ad0b",
+          "public",
+          "\"public\".\"court\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.courtCharacteristic.courtCharacteristic_name_key",
+    "label": "Add unique constraint on \"courtCharacteristic\" (name)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "courtCharacteristic_name_key",
+        "table": "courtCharacteristic"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"courtCharacteristic_name_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "courtCharacteristic_name_key",
+          "public",
+          "\"public\".\"courtCharacteristic\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"courtCharacteristic_name_key\"",
+        "sql": "ALTER TABLE \"public\".\"courtCharacteristic\" ADD CONSTRAINT \"courtCharacteristic_name_key\" UNIQUE (\"name\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"courtCharacteristic_name_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "courtCharacteristic_name_key",
+          "public",
+          "\"public\".\"courtCharacteristic\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.court.court_centerId_status_idx_8f6033a8",
+    "label": "Create index \"court_centerId_status_idx_8f6033a8\" on \"court\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "court_centerId_status_idx_8f6033a8",
+        "table": "court"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"court_centerId_status_idx_8f6033a8\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"court_centerId_status_idx_8f6033a8\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"court_centerId_status_idx_8f6033a8\"",
+        "sql": "CREATE INDEX \"court_centerId_status_idx_8f6033a8\" ON \"public\".\"court\" (\"centerId\", \"status\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"court_centerId_status_idx_8f6033a8\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"court_centerId_status_idx_8f6033a8\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.courtCharacteristicOnCourt.courtCharacteristicOnCourt_characteristicId_idx_dc313dbb",
+    "label": "Create index \"courtCharacteristicOnCourt_characteristicId_idx_dc313dbb\" on \"courtCharacteristicOnCourt\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "courtCharacteristicOnCourt_characteristicId_idx_dc313dbb",
+        "table": "courtCharacteristicOnCourt"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"courtCharacteristicOnCourt_characteristicId_idx_dc313dbb\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"courtCharacteristicOnCourt_characteristicId_idx_dc313dbb\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"courtCharacteristicOnCourt_characteristicId_idx_dc313dbb\"",
+        "sql": "CREATE INDEX \"courtCharacteristicOnCourt_characteristicId_idx_dc313dbb\" ON \"public\".\"courtCharacteristicOnCourt\" (\"characteristicId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"courtCharacteristicOnCourt_characteristicId_idx_dc313dbb\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"courtCharacteristicOnCourt_characteristicId_idx_dc313dbb\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.courtCharacteristicOnCourt.courtCharacteristicOnCourt_courtId_idx_50c15a04",
+    "label": "Create index \"courtCharacteristicOnCourt_courtId_idx_50c15a04\" on \"courtCharacteristicOnCourt\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "courtCharacteristicOnCourt_courtId_idx_50c15a04",
+        "table": "courtCharacteristicOnCourt"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"courtCharacteristicOnCourt_courtId_idx_50c15a04\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"courtCharacteristicOnCourt_courtId_idx_50c15a04\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"courtCharacteristicOnCourt_courtId_idx_50c15a04\"",
+        "sql": "CREATE INDEX \"courtCharacteristicOnCourt_courtId_idx_50c15a04\" ON \"public\".\"courtCharacteristicOnCourt\" (\"courtId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"courtCharacteristicOnCourt_courtId_idx_50c15a04\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"courtCharacteristicOnCourt_courtId_idx_50c15a04\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.courtCharacteristicOnCourt.courtCharacteristicOnCourt_courtId_fkey",
+    "label": "Add foreign key \"courtCharacteristicOnCourt_courtId_fkey\" on \"courtCharacteristicOnCourt\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "courtCharacteristicOnCourt_courtId_fkey",
+        "table": "courtCharacteristicOnCourt"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"courtCharacteristicOnCourt_courtId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "courtCharacteristicOnCourt_courtId_fkey",
+          "public",
+          "\"public\".\"courtCharacteristicOnCourt\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"courtCharacteristicOnCourt_courtId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"courtCharacteristicOnCourt\"\nADD CONSTRAINT \"courtCharacteristicOnCourt_courtId_fkey\"\nFOREIGN KEY (\"courtId\")\nREFERENCES \"public\".\"court\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"courtCharacteristicOnCourt_courtId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "courtCharacteristicOnCourt_courtId_fkey",
+          "public",
+          "\"public\".\"courtCharacteristicOnCourt\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.courtCharacteristicOnCourt.courtCharacteristicOnCourt_characteristicId_fkey",
+    "label": "Add foreign key \"courtCharacteristicOnCourt_characteristicId_fkey\" on \"courtCharacteristicOnCourt\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "courtCharacteristicOnCourt_characteristicId_fkey",
+        "table": "courtCharacteristicOnCourt"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"courtCharacteristicOnCourt_characteristicId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "courtCharacteristicOnCourt_characteristicId_fkey",
+          "public",
+          "\"public\".\"courtCharacteristicOnCourt\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"courtCharacteristicOnCourt_characteristicId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"courtCharacteristicOnCourt\"\nADD CONSTRAINT \"courtCharacteristicOnCourt_characteristicId_fkey\"\nFOREIGN KEY (\"characteristicId\")\nREFERENCES \"public\".\"courtCharacteristic\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"courtCharacteristicOnCourt_characteristicId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "courtCharacteristicOnCourt_characteristicId_fkey",
+          "public",
+          "\"public\".\"courtCharacteristicOnCourt\""
+        ]
+      }
+    ]
+  }
+]

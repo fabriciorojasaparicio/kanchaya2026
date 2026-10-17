@@ -34,9 +34,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'1eb113af7417ec8d708c6bb1abcad5f6b71c66bb1870afcf841373bb10e2162f'>;
+  StorageHashBase<'169bb8f644ee6c7c6c675d574c5ce44f6a68f7c784505b5ae0d6edb354c31df1'>;
 export type ExecutionHash =
-  ExecutionHashBase<'54a3583e5603fbc94420b2e7ced6daf74dbcba20318df0f628f25609d8d68067'>;
+  ExecutionHashBase<'49586c1df298a3a1d3a2555553b875730179eaaea6ec5b2237ae5b6916f33974'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -289,8 +289,32 @@ export type FieldOutputTypes = {
       readonly id: CodecTypes['pg/text@1']['output'];
       readonly centerId: CodecTypes['pg/text@1']['output'];
       readonly name: CodecTypes['pg/text@1']['output'];
+      readonly status: 'ENABLED' | 'DISABLED' | 'MAINTENANCE';
+      readonly publicationStatus: 'DRAFT' | 'PUBLISHED';
+      readonly hourlyPriceCentimos: CodecTypes['pg/int4@1']['output'] | null;
       readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
+    readonly CourtCharacteristic: {
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly name: CodecTypes['pg/text@1']['output'];
+      readonly isActive: CodecTypes['pg/bool@1']['output'];
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
+    readonly CourtCharacteristicOnCourt: {
+      readonly courtId: CodecTypes['pg/text@1']['output'];
+      readonly characteristicId: CodecTypes['pg/text@1']['output'];
+      readonly assignedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
+    readonly CourtPhoto: {
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly courtId: CodecTypes['pg/text@1']['output'];
+      readonly storageKey: CodecTypes['pg/text@1']['output'];
+      readonly contentType: CodecTypes['pg/text@1']['output'];
+      readonly byteSize: CodecTypes['pg/int4@1']['output'];
+      readonly status: 'PENDING' | 'PUBLISHED';
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
     };
     readonly Payment: {
       readonly id: CodecTypes['pg/text@1']['output'];
@@ -327,8 +351,21 @@ export type FieldOutputTypes = {
     readonly SportsCenter: {
       readonly id: CodecTypes['pg/text@1']['output'];
       readonly name: CodecTypes['pg/text@1']['output'];
+      readonly openingHours: CodecTypes['pg/json@1']['output'] | null;
       readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
+    readonly SportsCenterTag: {
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly name: CodecTypes['pg/text@1']['output'];
+      readonly isActive: CodecTypes['pg/bool@1']['output'];
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
+    readonly SportsCenterTagOnCenter: {
+      readonly centerId: CodecTypes['pg/text@1']['output'];
+      readonly tagId: CodecTypes['pg/text@1']['output'];
+      readonly assignedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
     };
     readonly Team: {
       readonly id: CodecTypes['pg/text@1']['output'];
@@ -412,8 +449,32 @@ export type FieldInputTypes = {
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly centerId: CodecTypes['pg/text@1']['input'];
       readonly name: CodecTypes['pg/text@1']['input'];
+      readonly status: 'ENABLED' | 'DISABLED' | 'MAINTENANCE';
+      readonly publicationStatus: 'DRAFT' | 'PUBLISHED';
+      readonly hourlyPriceCentimos: CodecTypes['pg/int4@1']['input'] | null;
       readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+    };
+    readonly CourtCharacteristic: {
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly name: CodecTypes['pg/text@1']['input'];
+      readonly isActive: CodecTypes['pg/bool@1']['input'];
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+    };
+    readonly CourtCharacteristicOnCourt: {
+      readonly courtId: CodecTypes['pg/text@1']['input'];
+      readonly characteristicId: CodecTypes['pg/text@1']['input'];
+      readonly assignedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+    };
+    readonly CourtPhoto: {
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly courtId: CodecTypes['pg/text@1']['input'];
+      readonly storageKey: CodecTypes['pg/text@1']['input'];
+      readonly contentType: CodecTypes['pg/text@1']['input'];
+      readonly byteSize: CodecTypes['pg/int4@1']['input'];
+      readonly status: 'PENDING' | 'PUBLISHED';
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
     };
     readonly Payment: {
       readonly id: CodecTypes['pg/text@1']['input'];
@@ -450,8 +511,21 @@ export type FieldInputTypes = {
     readonly SportsCenter: {
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly name: CodecTypes['pg/text@1']['input'];
+      readonly openingHours: CodecTypes['pg/json@1']['input'] | null;
       readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+    };
+    readonly SportsCenterTag: {
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly name: CodecTypes['pg/text@1']['input'];
+      readonly isActive: CodecTypes['pg/bool@1']['input'];
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+    };
+    readonly SportsCenterTagOnCenter: {
+      readonly centerId: CodecTypes['pg/text@1']['input'];
+      readonly tagId: CodecTypes['pg/text@1']['input'];
+      readonly assignedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
     };
     readonly Team: {
       readonly id: CodecTypes['pg/text@1']['input'];
@@ -534,9 +608,33 @@ export type StorageColumnTypes = {
     readonly court: {
       readonly centerId: CodecTypes['pg/text@1']['output'];
       readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly hourlyPriceCentimos: CodecTypes['pg/int4@1']['output'] | null;
       readonly id: CodecTypes['pg/text@1']['output'];
       readonly name: CodecTypes['pg/text@1']['output'];
+      readonly publicationStatus: 'DRAFT' | 'PUBLISHED';
+      readonly status: 'ENABLED' | 'DISABLED' | 'MAINTENANCE';
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
+    readonly courtCharacteristic: {
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly isActive: CodecTypes['pg/bool@1']['output'];
+      readonly name: CodecTypes['pg/text@1']['output'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
+    readonly courtCharacteristicOnCourt: {
+      readonly assignedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly characteristicId: CodecTypes['pg/text@1']['output'];
+      readonly courtId: CodecTypes['pg/text@1']['output'];
+    };
+    readonly courtPhoto: {
+      readonly byteSize: CodecTypes['pg/int4@1']['output'];
+      readonly contentType: CodecTypes['pg/text@1']['output'];
+      readonly courtId: CodecTypes['pg/text@1']['output'];
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly status: 'PENDING' | 'PUBLISHED';
+      readonly storageKey: CodecTypes['pg/text@1']['output'];
     };
     readonly payment: {
       readonly bookingId: CodecTypes['pg/text@1']['output'];
@@ -574,7 +672,20 @@ export type StorageColumnTypes = {
       readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
       readonly id: CodecTypes['pg/text@1']['output'];
       readonly name: CodecTypes['pg/text@1']['output'];
+      readonly openingHours: CodecTypes['pg/json@1']['output'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
+    readonly sportsCenterTag: {
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly isActive: CodecTypes['pg/bool@1']['output'];
+      readonly name: CodecTypes['pg/text@1']['output'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
+    readonly sportsCenterTagOnCenter: {
+      readonly assignedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly centerId: CodecTypes['pg/text@1']['output'];
+      readonly tagId: CodecTypes['pg/text@1']['output'];
     };
     readonly team: {
       readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
@@ -657,9 +768,33 @@ export type StorageColumnInputTypes = {
     readonly court: {
       readonly centerId: CodecTypes['pg/text@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly hourlyPriceCentimos: CodecTypes['pg/int4@1']['input'] | null;
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly name: CodecTypes['pg/text@1']['input'];
+      readonly publicationStatus: 'DRAFT' | 'PUBLISHED';
+      readonly status: 'ENABLED' | 'DISABLED' | 'MAINTENANCE';
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+    };
+    readonly courtCharacteristic: {
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly isActive: CodecTypes['pg/bool@1']['input'];
+      readonly name: CodecTypes['pg/text@1']['input'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+    };
+    readonly courtCharacteristicOnCourt: {
+      readonly assignedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly characteristicId: CodecTypes['pg/text@1']['input'];
+      readonly courtId: CodecTypes['pg/text@1']['input'];
+    };
+    readonly courtPhoto: {
+      readonly byteSize: CodecTypes['pg/int4@1']['input'];
+      readonly contentType: CodecTypes['pg/text@1']['input'];
+      readonly courtId: CodecTypes['pg/text@1']['input'];
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly status: 'PENDING' | 'PUBLISHED';
+      readonly storageKey: CodecTypes['pg/text@1']['input'];
     };
     readonly payment: {
       readonly bookingId: CodecTypes['pg/text@1']['input'];
@@ -697,7 +832,20 @@ export type StorageColumnInputTypes = {
       readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly name: CodecTypes['pg/text@1']['input'];
+      readonly openingHours: CodecTypes['pg/json@1']['input'] | null;
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+    };
+    readonly sportsCenterTag: {
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly isActive: CodecTypes['pg/bool@1']['input'];
+      readonly name: CodecTypes['pg/text@1']['input'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+    };
+    readonly sportsCenterTagOnCenter: {
+      readonly assignedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly centerId: CodecTypes['pg/text@1']['input'];
+      readonly tagId: CodecTypes['pg/text@1']['input'];
     };
     readonly team: {
       readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
@@ -803,11 +951,13 @@ export namespace Models {
   export type public_SportsCenter = {
     id: CodecTypes['pg/text@1']['output'];
     name: CodecTypes['pg/text@1']['output'];
+    openingHours: CodecTypes['pg/json@1']['output'] | null;
     createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
     updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
     courts: public_Court[];
     managers: public_CenterManager[];
-    readonly [RelationKeys]?: 'courts' | 'managers';
+    tags: public_SportsCenterTagOnCenter[];
+    readonly [RelationKeys]?: 'courts' | 'managers' | 'tags';
   };
   export type public_CenterManager = {
     id: CodecTypes['pg/text@1']['output'];
@@ -823,11 +973,61 @@ export namespace Models {
     id: CodecTypes['pg/text@1']['output'];
     centerId: CodecTypes['pg/text@1']['output'];
     name: CodecTypes['pg/text@1']['output'];
+    status: 'ENABLED' | 'DISABLED' | 'MAINTENANCE';
+    publicationStatus: 'DRAFT' | 'PUBLISHED';
+    hourlyPriceCentimos: CodecTypes['pg/int4@1']['output'] | null;
     createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
     updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
     bookings: public_Booking[];
     center: public_SportsCenter;
-    readonly [RelationKeys]?: 'bookings' | 'center';
+    characteristics: public_CourtCharacteristicOnCourt[];
+    photos: public_CourtPhoto[];
+    readonly [RelationKeys]?: 'bookings' | 'center' | 'characteristics' | 'photos';
+  };
+  export type public_CourtPhoto = {
+    id: CodecTypes['pg/text@1']['output'];
+    courtId: CodecTypes['pg/text@1']['output'];
+    storageKey: CodecTypes['pg/text@1']['output'];
+    contentType: CodecTypes['pg/text@1']['output'];
+    byteSize: CodecTypes['pg/int4@1']['output'];
+    status: 'PENDING' | 'PUBLISHED';
+    createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    court: public_Court;
+    readonly [RelationKeys]?: 'court';
+  };
+  export type public_CourtCharacteristic = {
+    id: CodecTypes['pg/text@1']['output'];
+    name: CodecTypes['pg/text@1']['output'];
+    isActive: CodecTypes['pg/bool@1']['output'];
+    createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    courts: public_CourtCharacteristicOnCourt[];
+    readonly [RelationKeys]?: 'courts';
+  };
+  export type public_CourtCharacteristicOnCourt = {
+    courtId: CodecTypes['pg/text@1']['output'];
+    characteristicId: CodecTypes['pg/text@1']['output'];
+    assignedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    characteristic: public_CourtCharacteristic;
+    court: public_Court;
+    readonly [RelationKeys]?: 'characteristic' | 'court';
+  };
+  export type public_SportsCenterTag = {
+    id: CodecTypes['pg/text@1']['output'];
+    name: CodecTypes['pg/text@1']['output'];
+    isActive: CodecTypes['pg/bool@1']['output'];
+    createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    centers: public_SportsCenterTagOnCenter[];
+    readonly [RelationKeys]?: 'centers';
+  };
+  export type public_SportsCenterTagOnCenter = {
+    centerId: CodecTypes['pg/text@1']['output'];
+    tagId: CodecTypes['pg/text@1']['output'];
+    assignedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    center: public_SportsCenter;
+    tag: public_SportsCenterTag;
+    readonly [RelationKeys]?: 'center' | 'tag';
   };
   export type public_Team = {
     id: CodecTypes['pg/text@1']['output'];
@@ -925,6 +1125,11 @@ export declare const models: {
     SportsCenter: Models.public_SportsCenter;
     CenterManager: Models.public_CenterManager;
     Court: Models.public_Court;
+    CourtPhoto: Models.public_CourtPhoto;
+    CourtCharacteristic: Models.public_CourtCharacteristic;
+    CourtCharacteristicOnCourt: Models.public_CourtCharacteristicOnCourt;
+    SportsCenterTag: Models.public_SportsCenterTag;
+    SportsCenterTagOnCenter: Models.public_SportsCenterTagOnCenter;
     Team: Models.public_Team;
     TeamMember: Models.public_TeamMember;
     Booking: Models.public_Booking;
@@ -1304,6 +1509,29 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
                 };
+                readonly status: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'ENABLED'>;
+                  };
+                };
+                readonly publicationStatus: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'DRAFT'>;
+                  };
+                };
+                readonly hourlyPriceCentimos: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: true;
+                };
                 readonly createdAt: {
                   readonly nativeType: 'timestamptz';
                   readonly codecId: 'pg/timestamptz-temporal@1';
@@ -1325,6 +1553,12 @@ type ContractBase = Omit<
                   readonly columns: readonly ['centerId'];
                   readonly unique: false;
                 },
+                {
+                  readonly name: 'court_centerId_status_idx_8f6033a8';
+                  readonly prefix: 'court_centerId_status_idx';
+                  readonly columns: readonly ['centerId', 'status'];
+                  readonly unique: false;
+                },
               ];
               foreignKeys: readonly [
                 {
@@ -1336,6 +1570,180 @@ type ContractBase = Omit<
                   readonly target: {
                     readonly namespaceId: 'public' & NamespaceId;
                     readonly tableName: 'sportsCenter';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
+            };
+            readonly courtCharacteristic: {
+              columns: {
+                readonly id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly name: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly isActive: {
+                  readonly nativeType: 'bool';
+                  readonly codecId: 'pg/bool@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/bool@1', true>;
+                  };
+                };
+                readonly createdAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly updatedAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [{ readonly columns: readonly ['name'] }];
+              indexes: readonly [];
+              foreignKeys: readonly [];
+            };
+            readonly courtCharacteristicOnCourt: {
+              columns: {
+                readonly courtId: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly characteristicId: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly assignedAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+              };
+              primaryKey: { readonly columns: readonly ['courtId', 'characteristicId'] };
+              uniques: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'courtCharacteristicOnCourt_characteristicId_idx_dc313dbb';
+                  readonly prefix: 'courtCharacteristicOnCourt_characteristicId_idx';
+                  readonly columns: readonly ['characteristicId'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'courtCharacteristicOnCourt_courtId_idx_50c15a04';
+                  readonly prefix: 'courtCharacteristicOnCourt_courtId_idx';
+                  readonly columns: readonly ['courtId'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'courtCharacteristicOnCourt';
+                    readonly columns: readonly ['courtId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'court';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'courtCharacteristicOnCourt';
+                    readonly columns: readonly ['characteristicId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'courtCharacteristic';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
+            };
+            readonly courtPhoto: {
+              columns: {
+                readonly id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly courtId: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly storageKey: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly contentType: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly byteSize: {
+                  readonly nativeType: 'int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                };
+                readonly status: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'PENDING'>;
+                  };
+                };
+                readonly createdAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [{ readonly columns: readonly ['storageKey'] }];
+              indexes: readonly [
+                {
+                  readonly name: 'courtPhoto_courtId_status_idx_d3d75f6e';
+                  readonly prefix: 'courtPhoto_courtId_status_idx';
+                  readonly columns: readonly ['courtId', 'status'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'courtPhoto_courtId_idx_50c15a04';
+                  readonly prefix: 'courtPhoto_courtId_idx';
+                  readonly columns: readonly ['courtId'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'courtPhoto';
+                    readonly columns: readonly ['courtId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'court';
                     readonly columns: readonly ['id'];
                   };
                 },
@@ -1626,6 +2034,11 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
                 };
+                readonly openingHours: {
+                  readonly nativeType: 'json';
+                  readonly codecId: 'pg/json@1';
+                  readonly nullable: true;
+                };
                 readonly createdAt: {
                   readonly nativeType: 'timestamptz';
                   readonly codecId: 'pg/timestamptz-temporal@1';
@@ -1642,6 +2055,106 @@ type ContractBase = Omit<
               uniques: readonly [];
               indexes: readonly [];
               foreignKeys: readonly [];
+            };
+            readonly sportsCenterTag: {
+              columns: {
+                readonly id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly name: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly isActive: {
+                  readonly nativeType: 'bool';
+                  readonly codecId: 'pg/bool@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/bool@1', true>;
+                  };
+                };
+                readonly createdAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly updatedAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [{ readonly columns: readonly ['name'] }];
+              indexes: readonly [];
+              foreignKeys: readonly [];
+            };
+            readonly sportsCenterTagOnCenter: {
+              columns: {
+                readonly centerId: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly tagId: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly assignedAt: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+              };
+              primaryKey: { readonly columns: readonly ['centerId', 'tagId'] };
+              uniques: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'sportsCenterTagOnCenter_tagId_idx_86854244';
+                  readonly prefix: 'sportsCenterTagOnCenter_tagId_idx';
+                  readonly columns: readonly ['tagId'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'sportsCenterTagOnCenter_centerId_idx_57ced294';
+                  readonly prefix: 'sportsCenterTagOnCenter_centerId_idx';
+                  readonly columns: readonly ['centerId'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'sportsCenterTagOnCenter';
+                    readonly columns: readonly ['centerId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'sportsCenter';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'sportsCenterTagOnCenter';
+                    readonly columns: readonly ['tagId'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'sportsCenterTag';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
             };
             readonly team: {
               columns: {
@@ -1902,6 +2415,18 @@ type ContractBase = Omit<
                 'PERMISSION_REVOKED',
               ];
             };
+            readonly CourtPhotoStatus: {
+              readonly kind: 'valueSet';
+              readonly values: readonly ['PENDING', 'PUBLISHED'];
+            };
+            readonly CourtPublicationStatus: {
+              readonly kind: 'valueSet';
+              readonly values: readonly ['DRAFT', 'PUBLISHED'];
+            };
+            readonly CourtStatus: {
+              readonly kind: 'valueSet';
+              readonly values: readonly ['ENABLED', 'DISABLED', 'MAINTENANCE'];
+            };
             readonly RoleRequestStatus: {
               readonly kind: 'valueSet';
               readonly values: readonly ['PENDING', 'APPROVED', 'REJECTED'];
@@ -1944,6 +2469,26 @@ type ContractBase = Omit<
       readonly model: 'CenterManager';
     };
     readonly court: { readonly namespace: 'public' & NamespaceId; readonly model: 'Court' };
+    readonly courtPhoto: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'CourtPhoto';
+    };
+    readonly courtCharacteristic: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'CourtCharacteristic';
+    };
+    readonly courtCharacteristicOnCourt: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'CourtCharacteristicOnCourt';
+    };
+    readonly sportsCenterTag: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'SportsCenterTag';
+    };
+    readonly sportsCenterTagOnCenter: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'SportsCenterTagOnCenter';
+    };
     readonly team: { readonly namespace: 'public' & NamespaceId; readonly model: 'Team' };
     readonly teamMember: {
       readonly namespace: 'public' & NamespaceId;
@@ -2265,6 +2810,18 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
+              readonly status: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly publicationStatus: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly hourlyPriceCentimos: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
               readonly createdAt: {
                 readonly nullable: false;
                 readonly type: {
@@ -2304,6 +2861,28 @@ type ContractBase = Omit<
                   readonly targetFields: readonly ['id'];
                 };
               };
+              readonly characteristics: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'CourtCharacteristicOnCourt';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['courtId'];
+                };
+              };
+              readonly photos: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'CourtPhoto';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['courtId'];
+                };
+              };
             };
             readonly storage: {
               readonly table: 'court';
@@ -2312,8 +2891,181 @@ type ContractBase = Omit<
                 readonly id: { readonly column: 'id' };
                 readonly centerId: { readonly column: 'centerId' };
                 readonly name: { readonly column: 'name' };
+                readonly status: { readonly column: 'status' };
+                readonly publicationStatus: { readonly column: 'publicationStatus' };
+                readonly hourlyPriceCentimos: { readonly column: 'hourlyPriceCentimos' };
                 readonly createdAt: { readonly column: 'createdAt' };
                 readonly updatedAt: { readonly column: 'updatedAt' };
+              };
+            };
+          };
+          readonly CourtCharacteristic: {
+            readonly fields: {
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly name: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly isActive: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/bool@1' };
+              };
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+              readonly updatedAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+            };
+            readonly relations: {
+              readonly courts: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'CourtCharacteristicOnCourt';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['characteristicId'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'courtCharacteristic';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly id: { readonly column: 'id' };
+                readonly name: { readonly column: 'name' };
+                readonly isActive: { readonly column: 'isActive' };
+                readonly createdAt: { readonly column: 'createdAt' };
+                readonly updatedAt: { readonly column: 'updatedAt' };
+              };
+            };
+          };
+          readonly CourtCharacteristicOnCourt: {
+            readonly fields: {
+              readonly courtId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly characteristicId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly assignedAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+            };
+            readonly relations: {
+              readonly characteristic: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'CourtCharacteristic';
+                };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['characteristicId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+              readonly court: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'Court';
+                };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['courtId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'courtCharacteristicOnCourt';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly courtId: { readonly column: 'courtId' };
+                readonly characteristicId: { readonly column: 'characteristicId' };
+                readonly assignedAt: { readonly column: 'assignedAt' };
+              };
+            };
+          };
+          readonly CourtPhoto: {
+            readonly fields: {
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly courtId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly storageKey: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly contentType: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly byteSize: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly status: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+            };
+            readonly relations: {
+              readonly court: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'Court';
+                };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['courtId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'courtPhoto';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly id: { readonly column: 'id' };
+                readonly courtId: { readonly column: 'courtId' };
+                readonly storageKey: { readonly column: 'storageKey' };
+                readonly contentType: { readonly column: 'contentType' };
+                readonly byteSize: { readonly column: 'byteSize' };
+                readonly status: { readonly column: 'status' };
+                readonly createdAt: { readonly column: 'createdAt' };
               };
             };
           };
@@ -2592,6 +3344,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
+              readonly openingHours: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/json@1' };
+              };
               readonly createdAt: {
                 readonly nullable: false;
                 readonly type: {
@@ -2630,6 +3386,17 @@ type ContractBase = Omit<
                   readonly targetFields: readonly ['centerId'];
                 };
               };
+              readonly tags: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'SportsCenterTagOnCenter';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['centerId'];
+                };
+              };
             };
             readonly storage: {
               readonly table: 'sportsCenter';
@@ -2637,8 +3404,117 @@ type ContractBase = Omit<
               readonly fields: {
                 readonly id: { readonly column: 'id' };
                 readonly name: { readonly column: 'name' };
+                readonly openingHours: { readonly column: 'openingHours' };
                 readonly createdAt: { readonly column: 'createdAt' };
                 readonly updatedAt: { readonly column: 'updatedAt' };
+              };
+            };
+          };
+          readonly SportsCenterTag: {
+            readonly fields: {
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly name: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly isActive: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/bool@1' };
+              };
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+              readonly updatedAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+            };
+            readonly relations: {
+              readonly centers: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'SportsCenterTagOnCenter';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['tagId'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'sportsCenterTag';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly id: { readonly column: 'id' };
+                readonly name: { readonly column: 'name' };
+                readonly isActive: { readonly column: 'isActive' };
+                readonly createdAt: { readonly column: 'createdAt' };
+                readonly updatedAt: { readonly column: 'updatedAt' };
+              };
+            };
+          };
+          readonly SportsCenterTagOnCenter: {
+            readonly fields: {
+              readonly centerId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly tagId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly assignedAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+            };
+            readonly relations: {
+              readonly center: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'SportsCenter';
+                };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['centerId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+              readonly tag: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'SportsCenterTag';
+                };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['tagId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'sportsCenterTagOnCenter';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly centerId: { readonly column: 'centerId' };
+                readonly tagId: { readonly column: 'tagId' };
+                readonly assignedAt: { readonly column: 'assignedAt' };
               };
             };
           };
@@ -3028,6 +3904,28 @@ type ContractBase = Omit<
               { readonly name: 'REJECTED'; readonly value: 'REJECTED' },
             ];
           };
+          readonly CourtStatus: {
+            readonly codecId: 'pg/text@1';
+            readonly members: readonly [
+              { readonly name: 'ENABLED'; readonly value: 'ENABLED' },
+              { readonly name: 'DISABLED'; readonly value: 'DISABLED' },
+              { readonly name: 'MAINTENANCE'; readonly value: 'MAINTENANCE' },
+            ];
+          };
+          readonly CourtPublicationStatus: {
+            readonly codecId: 'pg/text@1';
+            readonly members: readonly [
+              { readonly name: 'DRAFT'; readonly value: 'DRAFT' },
+              { readonly name: 'PUBLISHED'; readonly value: 'PUBLISHED' },
+            ];
+          };
+          readonly CourtPhotoStatus: {
+            readonly codecId: 'pg/text@1';
+            readonly members: readonly [
+              { readonly name: 'PENDING'; readonly value: 'PENDING' },
+              { readonly name: 'PUBLISHED'; readonly value: 'PUBLISHED' },
+            ];
+          };
           readonly AuditEventType: {
             readonly codecId: 'pg/text@1';
             readonly members: readonly [
@@ -3128,6 +4026,31 @@ type ContractBase = Omit<
         {
           readonly ref: {
             readonly namespace: 'public';
+            readonly table: 'courtCharacteristic';
+            readonly column: 'id';
+          };
+          readonly onCreate: { readonly kind: 'generator'; readonly id: 'uuidv4' };
+        },
+        {
+          readonly ref: {
+            readonly namespace: 'public';
+            readonly table: 'courtCharacteristic';
+            readonly column: 'updatedAt';
+          };
+          readonly onCreate: { readonly kind: 'generator'; readonly id: 'instantNow' };
+          readonly onUpdate: { readonly kind: 'generator'; readonly id: 'instantNow' };
+        },
+        {
+          readonly ref: {
+            readonly namespace: 'public';
+            readonly table: 'courtPhoto';
+            readonly column: 'id';
+          };
+          readonly onCreate: { readonly kind: 'generator'; readonly id: 'uuidv4' };
+        },
+        {
+          readonly ref: {
+            readonly namespace: 'public';
             readonly table: 'payment';
             readonly column: 'id';
           };
@@ -3178,6 +4101,23 @@ type ContractBase = Omit<
           readonly ref: {
             readonly namespace: 'public';
             readonly table: 'sportsCenter';
+            readonly column: 'updatedAt';
+          };
+          readonly onCreate: { readonly kind: 'generator'; readonly id: 'instantNow' };
+          readonly onUpdate: { readonly kind: 'generator'; readonly id: 'instantNow' };
+        },
+        {
+          readonly ref: {
+            readonly namespace: 'public';
+            readonly table: 'sportsCenterTag';
+            readonly column: 'id';
+          };
+          readonly onCreate: { readonly kind: 'generator'; readonly id: 'uuidv4' };
+        },
+        {
+          readonly ref: {
+            readonly namespace: 'public';
+            readonly table: 'sportsCenterTag';
             readonly column: 'updatedAt';
           };
           readonly onCreate: { readonly kind: 'generator'; readonly id: 'instantNow' };

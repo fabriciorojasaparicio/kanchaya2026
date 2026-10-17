@@ -1,0 +1,467 @@
+[
+  {
+    "id": "table.sportsCenterTag",
+    "label": "Create table \"sportsCenterTag\"",
+    "summary": "Creates table \"sportsCenterTag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "sportsCenterTag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"sportsCenterTag\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sportsCenterTag\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"sportsCenterTag\"",
+        "sql": "CREATE TABLE \"public\".\"sportsCenterTag\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" text NOT NULL,\n  \"isActive\" bool DEFAULT true NOT NULL,\n  \"name\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"sportsCenterTag\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sportsCenterTag\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.sportsCenterTagOnCenter",
+    "label": "Create table \"sportsCenterTagOnCenter\"",
+    "summary": "Creates table \"sportsCenterTagOnCenter\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "sportsCenterTagOnCenter"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"sportsCenterTagOnCenter\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sportsCenterTagOnCenter\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"sportsCenterTagOnCenter\"",
+        "sql": "CREATE TABLE \"public\".\"sportsCenterTagOnCenter\" (\n  \"assignedAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"centerId\" text NOT NULL,\n  \"tagId\" text NOT NULL,\n  PRIMARY KEY (\"centerId\", \"tagId\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"sportsCenterTagOnCenter\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sportsCenterTagOnCenter\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.court.publicationStatus",
+    "label": "Add column \"publicationStatus\" to \"court\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "publicationStatus",
+        "table": "court"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"publicationStatus\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "court",
+          "publicationStatus"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"publicationStatus\"",
+        "sql": "ALTER TABLE \"public\".\"court\" ADD COLUMN \"publicationStatus\" text DEFAULT 'DRAFT' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"publicationStatus\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "court",
+          "publicationStatus"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkConstraint.court.court_publicationStatus_check_a79125dd",
+    "label": "Add check constraint \"court_publicationStatus_check_a79125dd\" on \"court\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "checkConstraint",
+        "name": "court_publicationStatus_check_a79125dd",
+        "table": "court"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"court_publicationStatus_check_a79125dd\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "court_publicationStatus_check_a79125dd",
+          "public",
+          "\"public\".\"court\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add check constraint \"court_publicationStatus_check_a79125dd\"",
+        "sql": "ALTER TABLE \"public\".\"court\" ADD CONSTRAINT \"court_publicationStatus_check_a79125dd\" CHECK (\"publicationStatus\" IN ('DRAFT', 'PUBLISHED'))"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"court_publicationStatus_check_a79125dd\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "court_publicationStatus_check_a79125dd",
+          "public",
+          "\"public\".\"court\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.sportsCenterTag.sportsCenterTag_name_key",
+    "label": "Add unique constraint on \"sportsCenterTag\" (name)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "sportsCenterTag_name_key",
+        "table": "sportsCenterTag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"sportsCenterTag_name_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sportsCenterTag_name_key",
+          "public",
+          "\"public\".\"sportsCenterTag\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"sportsCenterTag_name_key\"",
+        "sql": "ALTER TABLE \"public\".\"sportsCenterTag\" ADD CONSTRAINT \"sportsCenterTag_name_key\" UNIQUE (\"name\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"sportsCenterTag_name_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sportsCenterTag_name_key",
+          "public",
+          "\"public\".\"sportsCenterTag\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.sportsCenterTagOnCenter.sportsCenterTagOnCenter_centerId_idx_57ced294",
+    "label": "Create index \"sportsCenterTagOnCenter_centerId_idx_57ced294\" on \"sportsCenterTagOnCenter\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "sportsCenterTagOnCenter_centerId_idx_57ced294",
+        "table": "sportsCenterTagOnCenter"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"sportsCenterTagOnCenter_centerId_idx_57ced294\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sportsCenterTagOnCenter_centerId_idx_57ced294\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"sportsCenterTagOnCenter_centerId_idx_57ced294\"",
+        "sql": "CREATE INDEX \"sportsCenterTagOnCenter_centerId_idx_57ced294\" ON \"public\".\"sportsCenterTagOnCenter\" (\"centerId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"sportsCenterTagOnCenter_centerId_idx_57ced294\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sportsCenterTagOnCenter_centerId_idx_57ced294\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.sportsCenterTagOnCenter.sportsCenterTagOnCenter_tagId_idx_86854244",
+    "label": "Create index \"sportsCenterTagOnCenter_tagId_idx_86854244\" on \"sportsCenterTagOnCenter\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "sportsCenterTagOnCenter_tagId_idx_86854244",
+        "table": "sportsCenterTagOnCenter"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"sportsCenterTagOnCenter_tagId_idx_86854244\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sportsCenterTagOnCenter_tagId_idx_86854244\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"sportsCenterTagOnCenter_tagId_idx_86854244\"",
+        "sql": "CREATE INDEX \"sportsCenterTagOnCenter_tagId_idx_86854244\" ON \"public\".\"sportsCenterTagOnCenter\" (\"tagId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"sportsCenterTagOnCenter_tagId_idx_86854244\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"sportsCenterTagOnCenter_tagId_idx_86854244\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.sportsCenterTagOnCenter.sportsCenterTagOnCenter_centerId_fkey",
+    "label": "Add foreign key \"sportsCenterTagOnCenter_centerId_fkey\" on \"sportsCenterTagOnCenter\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "sportsCenterTagOnCenter_centerId_fkey",
+        "table": "sportsCenterTagOnCenter"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"sportsCenterTagOnCenter_centerId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sportsCenterTagOnCenter_centerId_fkey",
+          "public",
+          "\"public\".\"sportsCenterTagOnCenter\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"sportsCenterTagOnCenter_centerId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"sportsCenterTagOnCenter\"\nADD CONSTRAINT \"sportsCenterTagOnCenter_centerId_fkey\"\nFOREIGN KEY (\"centerId\")\nREFERENCES \"public\".\"sportsCenter\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"sportsCenterTagOnCenter_centerId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sportsCenterTagOnCenter_centerId_fkey",
+          "public",
+          "\"public\".\"sportsCenterTagOnCenter\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.sportsCenterTagOnCenter.sportsCenterTagOnCenter_tagId_fkey",
+    "label": "Add foreign key \"sportsCenterTagOnCenter_tagId_fkey\" on \"sportsCenterTagOnCenter\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "sportsCenterTagOnCenter_tagId_fkey",
+        "table": "sportsCenterTagOnCenter"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"sportsCenterTagOnCenter_tagId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sportsCenterTagOnCenter_tagId_fkey",
+          "public",
+          "\"public\".\"sportsCenterTagOnCenter\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"sportsCenterTagOnCenter_tagId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"sportsCenterTagOnCenter\"\nADD CONSTRAINT \"sportsCenterTagOnCenter_tagId_fkey\"\nFOREIGN KEY (\"tagId\")\nREFERENCES \"public\".\"sportsCenterTag\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"sportsCenterTagOnCenter_tagId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "sportsCenterTagOnCenter_tagId_fkey",
+          "public",
+          "\"public\".\"sportsCenterTagOnCenter\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "data_migration.preserve-existing-court-listings",
+    "label": "Data transform: preserve-existing-court-listings",
+    "operationClass": "data",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "Check preserve-existing-court-listings has work to do",
+        "sql": "SELECT EXISTS (SELECT \"id\" FROM \"public\".\"court\"\n            WHERE \"status\" = 'ENABLED' AND \"publicationStatus\" <> 'PUBLISHED'\n            LIMIT 1) AS ok",
+        "params": []
+      }
+    ],
+    "execute": [
+      {
+        "description": "Run preserve-existing-court-listings",
+        "sql": "UPDATE \"public\".\"court\"\n            SET \"publicationStatus\" = 'PUBLISHED'\n            WHERE \"status\" = 'ENABLED' AND \"publicationStatus\" <> 'PUBLISHED'",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "Verify preserve-existing-court-listings resolved all violations",
+        "sql": "SELECT NOT EXISTS (SELECT \"id\" FROM \"public\".\"court\"\n            WHERE \"status\" = 'ENABLED' AND \"publicationStatus\" <> 'PUBLISHED'\n            LIMIT 1) AS ok",
+        "params": []
+      }
+    ]
+  },
+  {
+    "id": "data_migration.create-legacy-center-tag",
+    "label": "Data transform: create-legacy-center-tag",
+    "operationClass": "data",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "Check create-legacy-center-tag has work to do",
+        "sql": "SELECT EXISTS (SELECT \"id\" FROM \"public\".\"sportsCenterTag\"\n            WHERE \"id\" = $1 LIMIT 1) AS ok",
+        "params": [
+          "00000000-0000-4000-8000-000000000001"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "Run create-legacy-center-tag",
+        "sql": "INSERT INTO \"public\".\"sportsCenterTag\"\n            (\"id\", \"name\", \"isActive\", \"createdAt\", \"updatedAt\")\n            VALUES ($1, 'Centro deportivo', TRUE, NOW(), NOW())\n            ON CONFLICT (\"name\") DO NOTHING",
+        "params": [
+          "00000000-0000-4000-8000-000000000001"
+        ]
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "Verify create-legacy-center-tag resolved all violations",
+        "sql": "SELECT NOT EXISTS (SELECT \"id\" FROM \"public\".\"sportsCenterTag\"\n            WHERE \"id\" = $1 LIMIT 1) AS ok",
+        "params": [
+          "00000000-0000-4000-8000-000000000001"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "data_migration.assign-legacy-center-tag",
+    "label": "Data transform: assign-legacy-center-tag",
+    "operationClass": "data",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [
+      {
+        "description": "Check assign-legacy-center-tag has work to do",
+        "sql": "SELECT EXISTS (SELECT center.\"id\"\n            FROM \"public\".\"sportsCenter\" center\n            WHERE EXISTS (\n              SELECT 1 FROM \"public\".\"court\" court\n              WHERE court.\"centerId\" = center.\"id\"\n                AND court.\"status\" = 'ENABLED'\n                AND court.\"publicationStatus\" = 'PUBLISHED'\n            )\n            AND NOT EXISTS (\n              SELECT 1 FROM \"public\".\"sportsCenterTagOnCenter\" assignment\n              WHERE assignment.\"centerId\" = center.\"id\"\n                AND assignment.\"tagId\" = $1\n            )\n            LIMIT 1) AS ok",
+        "params": [
+          "00000000-0000-4000-8000-000000000001"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "Run assign-legacy-center-tag",
+        "sql": "INSERT INTO \"public\".\"sportsCenterTagOnCenter\"\n            (\"centerId\", \"tagId\", \"assignedAt\")\n            SELECT center.\"id\", $1, NOW()\n            FROM \"public\".\"sportsCenter\" center\n            WHERE EXISTS (\n              SELECT 1 FROM \"public\".\"court\" court\n              WHERE court.\"centerId\" = center.\"id\"\n                AND court.\"status\" = 'ENABLED'\n                AND court.\"publicationStatus\" = 'PUBLISHED'\n            )\n            ON CONFLICT (\"centerId\", \"tagId\") DO NOTHING",
+        "params": [
+          "00000000-0000-4000-8000-000000000001"
+        ]
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "Verify assign-legacy-center-tag resolved all violations",
+        "sql": "SELECT NOT EXISTS (SELECT center.\"id\"\n            FROM \"public\".\"sportsCenter\" center\n            WHERE EXISTS (\n              SELECT 1 FROM \"public\".\"court\" court\n              WHERE court.\"centerId\" = center.\"id\"\n                AND court.\"status\" = 'ENABLED'\n                AND court.\"publicationStatus\" = 'PUBLISHED'\n            )\n            AND NOT EXISTS (\n              SELECT 1 FROM \"public\".\"sportsCenterTagOnCenter\" assignment\n              WHERE assignment.\"centerId\" = center.\"id\"\n                AND assignment.\"tagId\" = $1\n            )\n            LIMIT 1) AS ok",
+        "params": [
+          "00000000-0000-4000-8000-000000000001"
+        ]
+      }
+    ]
+  }
+]

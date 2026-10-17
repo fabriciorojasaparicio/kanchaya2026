@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { AuditModule } from "./audit/audit.module";
 import { RateLimitStorageFactory, SecurityModule } from './security/security.module';
 import { SafeExceptionFilter } from './security/safe-exception.filter';
+import { SportsCentersModule } from './sports-centers/sports-centers.module';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule({
   // Do not transmit application source fragments with captured exceptions.
@@ -19,6 +20,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule({
 @Module({
   imports: [
     AuthModule,
+    SportsCentersModule,
     AuthzModule,
     AuditModule,
     SecurityModule,

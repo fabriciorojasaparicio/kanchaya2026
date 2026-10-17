@@ -1,0 +1,44 @@
+[
+  {
+    "id": "column.public.court.hourlyPriceCentimos",
+    "label": "Add column \"hourlyPriceCentimos\" to \"court\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "hourlyPriceCentimos",
+        "table": "court"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"hourlyPriceCentimos\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "court",
+          "hourlyPriceCentimos"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"hourlyPriceCentimos\"",
+        "sql": "ALTER TABLE \"public\".\"court\" ADD COLUMN \"hourlyPriceCentimos\" int4"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"hourlyPriceCentimos\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "court",
+          "hourlyPriceCentimos"
+        ]
+      }
+    ]
+  }
+]

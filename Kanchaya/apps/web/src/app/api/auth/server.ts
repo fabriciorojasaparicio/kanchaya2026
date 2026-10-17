@@ -10,8 +10,9 @@ const ERROR_MESSAGES: Record<number, { error: string; message: string }> = {
   401: { error: 'UNAUTHORIZED', message: 'Tu sesión expiró. Inicia sesión nuevamente.' },
   403: { error: 'FORBIDDEN', message: 'No tienes permiso para realizar esta acción.' },
   404: { error: 'NOT_FOUND', message: 'No se encontró el recurso solicitado.' },
-  409: { error: 'CONFLICT', message: 'Ese correo ya tiene una cuenta.' },
+  409: { error: 'CONFLICT', message: 'Ese dato ya existe. Revisa el formulario e inténtalo de nuevo.' },
   429: { error: 'RATE_LIMITED', message: 'Demasiados intentos. Espera un momento antes de volver a intentarlo.' },
+  503: { error: 'SERVICE_UNAVAILABLE', message: 'La carga de fotos no está configurada en este entorno. Contacta al administrador de KanchaYA.' },
 };
 
 export function isSameOriginRequest(request: Request): boolean {
@@ -83,4 +84,32 @@ export async function proxyAuthRequest(path: string, init: RequestInit, request?
       { status: 503, headers: { 'Cache-Control': 'no-store' } },
     );
   }
+}
+
+export async function proxySessionRequest(
+  path: string,
+  init: RequestInit,
+  request: Request,
+  requireSameOrigin = false,
+): Promise<NextResponse> {
+  if (requireSameOrigin && !isSameOriginRequest(request)) {
+    return NextResponse.json(
+      { statusCode: 403, error: 'FORBIDDEN', message: 'Solicitud no permitida.' },
+      { status: 403, headers: { 'Cache-Control': 'no-store' } },
+    );
+  }
+
+  const token = await authCookie();
+  if (!token) {
+    return NextResponse.json(
+      { statusCode: 401, ...safeError(401) },
+      { status: 401, headers: { 'Cache-Control': 'no-store' } },
+    );
+  }
+
+  const headers = new Headers(init.headers);
+  headers.set('Authorization', `Bearer ${token}`);
+  const response = await proxyAuthRequest(path, { ...init, headers }, request);
+  if (response.status === 401) response.cookies.set(SESSION_COOKIE, '', cookieOptions(0));
+  return response;
 }

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "KanchaYA | Tu próximo partido empieza aquí",
-  description: "Encuentra tu cancha y reúne a tu equipo con KanchaYA.",
+  title: "KanchaYA | Que el partido no se quede en el chat",
+  description: "Encuentra dónde jugar, reúne a tu gente y convierte ese plan en un partido con KanchaYA.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

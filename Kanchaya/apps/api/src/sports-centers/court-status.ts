@@ -1,0 +1,5 @@
+export enum CourtStatus {
+  ENABLED = 'ENABLED',
+  DISABLED = 'DISABLED',
+  MAINTENANCE = 'MAINTENANCE',
+}

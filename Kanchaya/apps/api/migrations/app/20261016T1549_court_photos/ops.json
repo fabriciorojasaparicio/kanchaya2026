@@ -1,0 +1,203 @@
+[
+  {
+    "id": "table.courtPhoto",
+    "label": "Create table \"courtPhoto\"",
+    "summary": "Creates table \"courtPhoto\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "courtPhoto"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"courtPhoto\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"courtPhoto\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"courtPhoto\"",
+        "sql": "CREATE TABLE \"public\".\"courtPhoto\" (\n  \"byteSize\" int4 NOT NULL,\n  \"contentType\" text NOT NULL,\n  \"courtId\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" text NOT NULL,\n  \"status\" text DEFAULT 'PENDING' NOT NULL,\n  \"storageKey\" text NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"courtPhoto_status_check_eb00dcf8\" CHECK (\"status\" IN ('PENDING', 'PUBLISHED'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"courtPhoto\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"courtPhoto\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.courtPhoto.courtPhoto_storageKey_key",
+    "label": "Add unique constraint on \"courtPhoto\" (storageKey)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "courtPhoto_storageKey_key",
+        "table": "courtPhoto"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"courtPhoto_storageKey_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "courtPhoto_storageKey_key",
+          "public",
+          "\"public\".\"courtPhoto\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"courtPhoto_storageKey_key\"",
+        "sql": "ALTER TABLE \"public\".\"courtPhoto\" ADD CONSTRAINT \"courtPhoto_storageKey_key\" UNIQUE (\"storageKey\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"courtPhoto_storageKey_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "courtPhoto_storageKey_key",
+          "public",
+          "\"public\".\"courtPhoto\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.courtPhoto.courtPhoto_courtId_idx_50c15a04",
+    "label": "Create index \"courtPhoto_courtId_idx_50c15a04\" on \"courtPhoto\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "courtPhoto_courtId_idx_50c15a04",
+        "table": "courtPhoto"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"courtPhoto_courtId_idx_50c15a04\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"courtPhoto_courtId_idx_50c15a04\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"courtPhoto_courtId_idx_50c15a04\"",
+        "sql": "CREATE INDEX \"courtPhoto_courtId_idx_50c15a04\" ON \"public\".\"courtPhoto\" (\"courtId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"courtPhoto_courtId_idx_50c15a04\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"courtPhoto_courtId_idx_50c15a04\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.courtPhoto.courtPhoto_courtId_status_idx_d3d75f6e",
+    "label": "Create index \"courtPhoto_courtId_status_idx_d3d75f6e\" on \"courtPhoto\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "courtPhoto_courtId_status_idx_d3d75f6e",
+        "table": "courtPhoto"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"courtPhoto_courtId_status_idx_d3d75f6e\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"courtPhoto_courtId_status_idx_d3d75f6e\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"courtPhoto_courtId_status_idx_d3d75f6e\"",
+        "sql": "CREATE INDEX \"courtPhoto_courtId_status_idx_d3d75f6e\" ON \"public\".\"courtPhoto\" (\"courtId\", \"status\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"courtPhoto_courtId_status_idx_d3d75f6e\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"courtPhoto_courtId_status_idx_d3d75f6e\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.courtPhoto.courtPhoto_courtId_fkey",
+    "label": "Add foreign key \"courtPhoto_courtId_fkey\" on \"courtPhoto\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "courtPhoto_courtId_fkey",
+        "table": "courtPhoto"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"courtPhoto_courtId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "courtPhoto_courtId_fkey",
+          "public",
+          "\"public\".\"courtPhoto\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"courtPhoto_courtId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"courtPhoto\"\nADD CONSTRAINT \"courtPhoto_courtId_fkey\"\nFOREIGN KEY (\"courtId\")\nREFERENCES \"public\".\"court\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"courtPhoto_courtId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "courtPhoto_courtId_fkey",
+          "public",
+          "\"public\".\"courtPhoto\""
+        ]
+      }
+    ]
+  }
+]

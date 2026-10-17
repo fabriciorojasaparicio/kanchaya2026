@@ -19,6 +19,22 @@ enum RoleRequestStatus {
 	REJECTED
 }
 
+enum CourtStatus {
+	ENABLED
+	DISABLED
+	MAINTENANCE
+}
+
+enum CourtPublicationStatus {
+	DRAFT
+	PUBLISHED
+}
+
+enum CourtPhotoStatus {
+	PENDING
+	PUBLISHED
+}
+
 enum AuditEventType {
 	ROLE_ASSIGNED
 	ROLE_CHANGED
@@ -90,12 +106,14 @@ model UserRole {
 }
 
 model SportsCenter {
-	id        String          @id @default(uuid())
+	id        String                 @id @default(uuid())
 	name      String
-	createdAt DateTime        @default(now())
+	openingHours Json?
+	createdAt DateTime               @default(now())
 	updatedAt temporal.updatedAt()
 	managers  CenterManager[]
 	courts    Court[]
+	tags      SportsCenterTagOnCenter[]
 }
 
 model CenterManager {
@@ -113,15 +131,74 @@ model CenterManager {
 }
 
 model Court {
-	id        String       @id @default(uuid())
-	centerId  String
-	name      String
-	createdAt DateTime     @default(now())
-	updatedAt temporal.updatedAt()
-	center    SportsCenter @relation(fields: [centerId], references: [id])
-	bookings  Booking[]
+	id                    String                       @id @default(uuid())
+	centerId              String
+	name                  String
+	status                CourtStatus                  @default(ENABLED)
+	publicationStatus     CourtPublicationStatus       @default(DRAFT)
+	hourlyPriceCentimos   Int?
+	createdAt             DateTime                     @default(now())
+	updatedAt             temporal.updatedAt()
+	center                SportsCenter                 @relation(fields: [centerId], references: [id])
+	bookings              Booking[]
+	characteristics       CourtCharacteristicOnCourt[]
+	photos                CourtPhoto[]
 
 	@@index([centerId])
+	@@index([centerId, status])
+}
+
+model CourtPhoto {
+	id          String           @id @default(uuid())
+	courtId     String
+	storageKey  String           @unique
+	contentType String
+	byteSize    Int
+	status      CourtPhotoStatus @default(PENDING)
+	createdAt   DateTime         @default(now())
+	court       Court            @relation(fields: [courtId], references: [id])
+
+	@@index([courtId, status])
+}
+
+model CourtCharacteristic {
+	id        String                       @id @default(uuid())
+	name      String                       @unique
+	isActive  Boolean                      @default(true)
+	createdAt DateTime                     @default(now())
+	updatedAt temporal.updatedAt()
+	courts    CourtCharacteristicOnCourt[]
+}
+
+model CourtCharacteristicOnCourt {
+	courtId           String
+	characteristicId  String
+	assignedAt        DateTime             @default(now())
+	court             Court                @relation(fields: [courtId], references: [id])
+	characteristic    CourtCharacteristic @relation(fields: [characteristicId], references: [id])
+
+	@@id([courtId, characteristicId])
+	@@index([characteristicId])
+}
+
+model SportsCenterTag {
+	id        String                    @id @default(uuid())
+	name      String                    @unique
+	isActive  Boolean                   @default(true)
+	createdAt DateTime                  @default(now())
+	updatedAt temporal.updatedAt()
+	centers   SportsCenterTagOnCenter[]
+}
+
+model SportsCenterTagOnCenter {
+	centerId String
+	tagId    String
+	assignedAt DateTime       @default(now())
+	center   SportsCenter    @relation(fields: [centerId], references: [id])
+	tag      SportsCenterTag @relation(fields: [tagId], references: [id])
+
+	@@id([centerId, tagId])
+	@@index([tagId])
 }
 
 model Team {

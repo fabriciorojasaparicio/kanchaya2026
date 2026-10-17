@@ -82,7 +82,7 @@ export function LoginForm() {
         {isSubmitting ? 'Ingresando…' : 'Iniciar sesión'}
       </button>
       <p className="form-switch">
-        ¿Aún no tienes cuenta? <Link href="/">Regístrate</Link>
+        ¿Aún no tienes cuenta? <Link href="/register">Regístrate</Link>
       </p>
     </form>
   );

@@ -42,6 +42,13 @@ const roles = [
   },
 ];
 
+const courtCharacteristics = [
+  "Techado",
+  "Superficie sintética",
+  "Estacionamiento",
+  "Iluminación",
+];
+
 const SEED_PASSWORD = process.env.SEED_PASSWORD;
 if (!SEED_PASSWORD || Buffer.byteLength(SEED_PASSWORD, "utf8") < 12) {
   throw new Error("SEED_PASSWORD debe configurarse con al menos 12 bytes.");
@@ -121,12 +128,22 @@ async function main() {
       );
     }
 
+    for (const name of courtCharacteristics) {
+      await client.query(
+        `INSERT INTO "courtCharacteristic" ("id", "name", "isActive", "createdAt", "updatedAt")
+         VALUES ($1, $2, TRUE, NOW(), NOW())
+         ON CONFLICT ("name") DO NOTHING`,
+        [randomUUID(), name],
+      );
+    }
+
     await client.query("COMMIT");
 
     console.log("Seed completado correctamente.");
     console.log("Roles creados/verificados: 4");
     console.log("Usuarios creados/verificados: 4");
     console.log("Asignaciones de rol creadas/verificadas: 4");
+    console.log(`Características de cancha verificadas: ${courtCharacteristics.length}`);
     console.log(`Contraseña de prueba: ${TEST_PASSWORD}`);
   } catch (error) {
     await client.query("ROLLBACK");

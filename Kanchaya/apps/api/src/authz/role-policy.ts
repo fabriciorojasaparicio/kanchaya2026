@@ -1,5 +1,5 @@
-import { Permission } from "./permissions";
-import { Role } from "./roles";
+import { Permission } from './permissions';
+import { Role } from './roles';
 
 export const ROLE_PERMISSIONS: Readonly<Record<Role, readonly Permission[]>> = {
   [Role.PLAYER]: [
@@ -26,6 +26,8 @@ export const ROLE_PERMISSIONS: Readonly<Record<Role, readonly Permission[]>> = {
     Permission.COURT_READ,
     Permission.COURT_CREATE,
     Permission.COURT_UPDATE,
+    Permission.COURT_CHARACTERISTIC_READ,
+    Permission.SPORTS_CENTER_TAG_READ,
 
     Permission.SCHEDULE_MANAGE,
     Permission.PRICE_MANAGE,
@@ -57,6 +59,10 @@ export const ROLE_PERMISSIONS: Readonly<Record<Role, readonly Permission[]>> = {
     Permission.COURT_READ,
     Permission.COURT_CREATE,
     Permission.COURT_UPDATE,
+    Permission.COURT_CHARACTERISTIC_READ,
+    Permission.COURT_CHARACTERISTIC_MANAGE,
+    Permission.SPORTS_CENTER_TAG_READ,
+    Permission.SPORTS_CENTER_TAG_MANAGE,
 
     Permission.SCHEDULE_MANAGE,
     Permission.PRICE_MANAGE,

@@ -24,6 +24,18 @@
       "model": "Court",
       "namespace": "public"
     },
+    "courtCharacteristic": {
+      "model": "CourtCharacteristic",
+      "namespace": "public"
+    },
+    "courtCharacteristicOnCourt": {
+      "model": "CourtCharacteristicOnCourt",
+      "namespace": "public"
+    },
+    "courtPhoto": {
+      "model": "CourtPhoto",
+      "namespace": "public"
+    },
     "payment": {
       "model": "Payment",
       "namespace": "public"
@@ -42,6 +54,14 @@
     },
     "sportsCenter": {
       "model": "SportsCenter",
+      "namespace": "public"
+    },
+    "sportsCenterTag": {
+      "model": "SportsCenterTag",
+      "namespace": "public"
+    },
+    "sportsCenterTagOnCenter": {
+      "model": "SportsCenterTagOnCenter",
       "namespace": "public"
     },
     "team": {
@@ -95,6 +115,49 @@
               {
                 "name": "PERMISSION_REVOKED",
                 "value": "PERMISSION_REVOKED"
+              }
+            ]
+          },
+          "CourtPhotoStatus": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "PENDING",
+                "value": "PENDING"
+              },
+              {
+                "name": "PUBLISHED",
+                "value": "PUBLISHED"
+              }
+            ]
+          },
+          "CourtPublicationStatus": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "DRAFT",
+                "value": "DRAFT"
+              },
+              {
+                "name": "PUBLISHED",
+                "value": "PUBLISHED"
+              }
+            ]
+          },
+          "CourtStatus": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "ENABLED",
+                "value": "ENABLED"
+              },
+              {
+                "name": "DISABLED",
+                "value": "DISABLED"
+              },
+              {
+                "name": "MAINTENANCE",
+                "value": "MAINTENANCE"
               }
             ]
           },
@@ -632,6 +695,13 @@
                   "kind": "scalar"
                 }
               },
+              "hourlyPriceCentimos": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
               "id": {
                 "nullable": false,
                 "type": {
@@ -644,6 +714,32 @@
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
+                }
+              },
+              "publicationStatus": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "CourtPublicationStatus",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "status": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "CourtStatus",
+                  "namespaceId": "public",
+                  "plane": "domain"
                 }
               },
               "updatedAt": {
@@ -685,6 +781,36 @@
                   "model": "SportsCenter",
                   "namespace": "public"
                 }
+              },
+              "characteristics": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "courtId"
+                  ]
+                },
+                "to": {
+                  "model": "CourtCharacteristicOnCourt",
+                  "namespace": "public"
+                }
+              },
+              "photos": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "courtId"
+                  ]
+                },
+                "to": {
+                  "model": "CourtPhoto",
+                  "namespace": "public"
+                }
               }
             },
             "storage": {
@@ -695,8 +821,94 @@
                 "createdAt": {
                   "column": "createdAt"
                 },
+                "hourlyPriceCentimos": {
+                  "column": "hourlyPriceCentimos"
+                },
                 "id": {
                   "column": "id"
+                },
+                "name": {
+                  "column": "name"
+                },
+                "publicationStatus": {
+                  "column": "publicationStatus"
+                },
+                "status": {
+                  "column": "status"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "court"
+            }
+          },
+          "CourtCharacteristic": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "isActive": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "name": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "courts": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "characteristicId"
+                  ]
+                },
+                "to": {
+                  "model": "CourtCharacteristicOnCourt",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "isActive": {
+                  "column": "isActive"
                 },
                 "name": {
                   "column": "name"
@@ -706,7 +918,185 @@
                 }
               },
               "namespaceId": "public",
-              "table": "court"
+              "table": "courtCharacteristic"
+            }
+          },
+          "CourtCharacteristicOnCourt": {
+            "fields": {
+              "assignedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "characteristicId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "courtId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "characteristic": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "characteristicId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "CourtCharacteristic",
+                  "namespace": "public"
+                }
+              },
+              "court": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "courtId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Court",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "assignedAt": {
+                  "column": "assignedAt"
+                },
+                "characteristicId": {
+                  "column": "characteristicId"
+                },
+                "courtId": {
+                  "column": "courtId"
+                }
+              },
+              "namespaceId": "public",
+              "table": "courtCharacteristicOnCourt"
+            }
+          },
+          "CourtPhoto": {
+            "fields": {
+              "byteSize": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "contentType": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "courtId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "status": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "CourtPhotoStatus",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "storageKey": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "court": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "courtId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Court",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "byteSize": {
+                  "column": "byteSize"
+                },
+                "contentType": {
+                  "column": "contentType"
+                },
+                "courtId": {
+                  "column": "courtId"
+                },
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "status": {
+                  "column": "status"
+                },
+                "storageKey": {
+                  "column": "storageKey"
+                }
+              },
+              "namespaceId": "public",
+              "table": "courtPhoto"
             }
           },
           "Payment": {
@@ -1152,6 +1542,13 @@
                   "kind": "scalar"
                 }
               },
+              "openingHours": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/json@1",
+                  "kind": "scalar"
+                }
+              },
               "updatedAt": {
                 "nullable": false,
                 "type": {
@@ -1190,6 +1587,21 @@
                   "model": "CenterManager",
                   "namespace": "public"
                 }
+              },
+              "tags": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "centerId"
+                  ]
+                },
+                "to": {
+                  "model": "SportsCenterTagOnCenter",
+                  "namespace": "public"
+                }
               }
             },
             "storage": {
@@ -1203,12 +1615,166 @@
                 "name": {
                   "column": "name"
                 },
+                "openingHours": {
+                  "column": "openingHours"
+                },
                 "updatedAt": {
                   "column": "updatedAt"
                 }
               },
               "namespaceId": "public",
               "table": "sportsCenter"
+            }
+          },
+          "SportsCenterTag": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "isActive": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "name": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "centers": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "tagId"
+                  ]
+                },
+                "to": {
+                  "model": "SportsCenterTagOnCenter",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "isActive": {
+                  "column": "isActive"
+                },
+                "name": {
+                  "column": "name"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "sportsCenterTag"
+            }
+          },
+          "SportsCenterTagOnCenter": {
+            "fields": {
+              "assignedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "centerId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "tagId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "center": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "centerId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "SportsCenter",
+                  "namespace": "public"
+                }
+              },
+              "tag": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "tagId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "SportsCenterTag",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "assignedAt": {
+                  "column": "assignedAt"
+                },
+                "centerId": {
+                  "column": "centerId"
+                },
+                "tagId": {
+                  "column": "tagId"
+                }
+              },
+              "namespaceId": "public",
+              "table": "sportsCenterTagOnCenter"
             }
           },
           "Team": {
@@ -2189,6 +2755,18 @@
               ]
             },
             "court": {
+              "checks": [
+                {
+                  "expression": "\"publicationStatus\" IN ('DRAFT', 'PUBLISHED')",
+                  "name": "court_publicationStatus_check_a79125dd",
+                  "prefix": "court_publicationStatus_check"
+                },
+                {
+                  "expression": "\"status\" IN ('ENABLED', 'DISABLED', 'MAINTENANCE')",
+                  "name": "court_status_check_63d6ad0b",
+                  "prefix": "court_status_check"
+                }
+              ],
               "columns": {
                 "centerId": {
                   "codecId": "pg/text@1",
@@ -2204,6 +2782,11 @@
                   "nativeType": "timestamptz",
                   "nullable": false
                 },
+                "hourlyPriceCentimos": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": true
+                },
                 "id": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
@@ -2213,6 +2796,36 @@
                   "codecId": "pg/text@1",
                   "nativeType": "text",
                   "nullable": false
+                },
+                "publicationStatus": {
+                  "codecId": "pg/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "DRAFT"
+                  },
+                  "nativeType": "text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "CourtPublicationStatus",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "status": {
+                  "codecId": "pg/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "ENABLED"
+                  },
+                  "nativeType": "text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "CourtStatus",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
                 },
                 "updatedAt": {
                   "codecId": "pg/timestamptz-temporal@1",
@@ -2246,6 +2859,15 @@
                   "name": "court_centerId_idx_57ced294",
                   "prefix": "court_centerId_idx",
                   "unique": false
+                },
+                {
+                  "columns": [
+                    "centerId",
+                    "status"
+                  ],
+                  "name": "court_centerId_status_idx_8f6033a8",
+                  "prefix": "court_centerId_status_idx",
+                  "unique": false
                 }
               ],
               "primaryKey": {
@@ -2254,6 +2876,248 @@
                 ]
               },
               "uniques": []
+            },
+            "courtCharacteristic": {
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "isActive": {
+                  "codecId": "pg/bool@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": true
+                  },
+                  "nativeType": "bool",
+                  "nullable": false
+                },
+                "name": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "name"
+                  ]
+                }
+              ]
+            },
+            "courtCharacteristicOnCourt": {
+              "columns": {
+                "assignedAt": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "characteristicId": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "courtId": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "source": {
+                    "columns": [
+                      "courtId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "courtCharacteristicOnCourt"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "court"
+                  }
+                },
+                {
+                  "source": {
+                    "columns": [
+                      "characteristicId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "courtCharacteristicOnCourt"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "courtCharacteristic"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "characteristicId"
+                  ],
+                  "name": "courtCharacteristicOnCourt_characteristicId_idx_dc313dbb",
+                  "prefix": "courtCharacteristicOnCourt_characteristicId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "courtId"
+                  ],
+                  "name": "courtCharacteristicOnCourt_courtId_idx_50c15a04",
+                  "prefix": "courtCharacteristicOnCourt_courtId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "courtId",
+                  "characteristicId"
+                ]
+              },
+              "uniques": []
+            },
+            "courtPhoto": {
+              "checks": [
+                {
+                  "expression": "\"status\" IN ('PENDING', 'PUBLISHED')",
+                  "name": "courtPhoto_status_check_eb00dcf8",
+                  "prefix": "courtPhoto_status_check"
+                }
+              ],
+              "columns": {
+                "byteSize": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": false
+                },
+                "contentType": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "courtId": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "createdAt": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "status": {
+                  "codecId": "pg/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "PENDING"
+                  },
+                  "nativeType": "text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "CourtPhotoStatus",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "storageKey": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "source": {
+                    "columns": [
+                      "courtId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "courtPhoto"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "court"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "courtId"
+                  ],
+                  "name": "courtPhoto_courtId_idx_50c15a04",
+                  "prefix": "courtPhoto_courtId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "courtId",
+                    "status"
+                  ],
+                  "name": "courtPhoto_courtId_status_idx_d3d75f6e",
+                  "prefix": "courtPhoto_courtId_status_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "storageKey"
+                  ]
+                }
+              ]
             },
             "payment": {
               "columns": {
@@ -2638,6 +3502,11 @@
                   "nativeType": "text",
                   "nullable": false
                 },
+                "openingHours": {
+                  "codecId": "pg/json@1",
+                  "nativeType": "json",
+                  "nullable": true
+                },
                 "updatedAt": {
                   "codecId": "pg/timestamptz-temporal@1",
                   "nativeType": "timestamptz",
@@ -2649,6 +3518,139 @@
               "primaryKey": {
                 "columns": [
                   "id"
+                ]
+              },
+              "uniques": []
+            },
+            "sportsCenterTag": {
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "isActive": {
+                  "codecId": "pg/bool@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": true
+                  },
+                  "nativeType": "bool",
+                  "nullable": false
+                },
+                "name": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "name"
+                  ]
+                }
+              ]
+            },
+            "sportsCenterTagOnCenter": {
+              "columns": {
+                "assignedAt": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "centerId": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "tagId": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "source": {
+                    "columns": [
+                      "centerId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "sportsCenterTagOnCenter"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "sportsCenter"
+                  }
+                },
+                {
+                  "source": {
+                    "columns": [
+                      "tagId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "sportsCenterTagOnCenter"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "sportsCenterTag"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "centerId"
+                  ],
+                  "name": "sportsCenterTagOnCenter_centerId_idx_57ced294",
+                  "prefix": "sportsCenterTagOnCenter_centerId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "tagId"
+                  ],
+                  "name": "sportsCenterTagOnCenter_tagId_idx_86854244",
+                  "prefix": "sportsCenterTagOnCenter_tagId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "centerId",
+                  "tagId"
                 ]
               },
               "uniques": []
@@ -3014,6 +4016,28 @@
                 "PERMISSION_REVOKED"
               ]
             },
+            "CourtPhotoStatus": {
+              "kind": "valueSet",
+              "values": [
+                "PENDING",
+                "PUBLISHED"
+              ]
+            },
+            "CourtPublicationStatus": {
+              "kind": "valueSet",
+              "values": [
+                "DRAFT",
+                "PUBLISHED"
+              ]
+            },
+            "CourtStatus": {
+              "kind": "valueSet",
+              "values": [
+                "ENABLED",
+                "DISABLED",
+                "MAINTENANCE"
+              ]
+            },
             "RoleRequestStatus": {
               "kind": "valueSet",
               "values": [
@@ -3045,10 +4069,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "1eb113af7417ec8d708c6bb1abcad5f6b71c66bb1870afcf841373bb10e2162f"
+    "storageHash": "169bb8f644ee6c7c6c675d574c5ce44f6a68f7c784505b5ae0d6edb354c31df1"
   },
   "execution": {
-    "executionHash": "54a3583e5603fbc94420b2e7ced6daf74dbcba20318df0f628f25609d8d68067",
+    "executionHash": "49586c1df298a3a1d3a2555553b875730179eaaea6ec5b2237ae5b6916f33974",
     "mutations": {
       "defaults": [
         {
@@ -3144,6 +4168,43 @@
           "ref": {
             "column": "id",
             "namespace": "public",
+            "table": "courtCharacteristic"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "updatedAt",
+            "namespace": "public",
+            "table": "courtCharacteristic"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "id",
+            "namespace": "public",
+            "table": "courtPhoto"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "id",
+            "namespace": "public",
             "table": "payment"
           }
         },
@@ -3219,6 +4280,32 @@
             "column": "updatedAt",
             "namespace": "public",
             "table": "sportsCenter"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "id",
+            "namespace": "public",
+            "table": "sportsCenterTag"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "updatedAt",
+            "namespace": "public",
+            "table": "sportsCenterTag"
           }
         },
         {
